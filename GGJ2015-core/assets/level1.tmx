@@ -5,12 +5,12 @@
  </tileset>
  <layer name="floor" width="40" height="60">
   <data encoding="base64" compression="zlib">
-   eJzt1kEOgCAMRNFeHU/uBVRILJ1p+Iu/I/gSKHFExCAiIiL60fWS2vVlczDObGojvr1OtQsfPnVdZxcfPnzPVrWjo8/5XN19LrOx+j+qmOks2y7jbO+V71f4Ktbgw9fV5z6/Hd4/d5/z+VaswYevq899fl3fv0zjDlvWHVWGD98J3RTcuws=
+   eJzt1kEKgDAMRNFcvZ7cC6gtmHQm9C/+TuyDmuCIiEFERET0o+sltevL5mCc2dRGfLVOtQsfPnVdZxcfPnzPVrWjo8/5Xt19LrOx+j+qmOksW5Vx9u6V83f4djyDD19Xn8P8Zu+67P3n7nO/387zgQ+f0uc+v677L9NYYcv6RpXhw3dCN3usuxU=
   </data>
  </layer>
  <layer name="wall" width="40" height="60">
   <data encoding="base64" compression="zlib">
-   eJzt2FsOgyAQBVBMV9Kl1p30tZDWdl/FjyakAcs8GC5mbkLixyjHKCNxCiFMPlSGZpBtLczWQfdRjT2D7lvjPlncJwvHZ9nztXyU61v7qHNY+jjzuG8c3wjrw33us/T9nkeZgxr3lWuvh3a+UFmzVbckvls8vme8PX1pXtH2Bvb9O1fiy9VL+0qtcWSfNKf4vs3CNdwy52i7APse0fbs5Cv1M05a+Er9jJNez7c2HN8xMzg1o/u43w9EX7omEX3pmkT09Yj7ZEH3rUHuL+7bv2/LOJpPc99JSa2Puu/Uup9W/U9jH73H/myR7/8tVN9S8b8ILRLfXDjW9IwyPodZJcY=
+   eJzt2G0OwiAMBuAZT8JR3U38OohO7yX7sYQs1EEL9IX0TUiWOOxjGJXMTdPk/DiBDteRr2RK+1oE3cexavlSjZq+Lei+NeaTxXyycHzS3q/hy/n+1r7cGi19nDrm68fXw/4wn/la+vbzcmrkxnz0vfdzPV84N7XGPkvge/jrZ8Sr6Qvz8bYvsO9orsQXe76kfeWozgg+aS7+eZuZe7iF7+ptN2Dfy9veSj6qn3FSw0f1M0601jc1HJ+LDM49vfu4/x+IvnBPIvrCPYno0wjlQ0mvPpT1XYPcX8w3vi9m7NVX8tyZk1Rf7rmz1O+p1f9KnKNH7M8tsr3fQvUtf94XIfhikfhm4rqEh1pf6nPt8QMZmDRC
   </data>
  </layer>
  <layer name="roof" width="40" height="60" opacity="0.5">
