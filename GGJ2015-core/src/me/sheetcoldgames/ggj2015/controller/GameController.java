@@ -45,6 +45,10 @@ public class GameController {
 	public int[] backgroundLayer;
 	public int[] foregroundLayer;
 	
+	// misc
+	public boolean debugRender = true;
+	boolean debugPressed = false;
+	
 	public GameController(Input input) {
 		// initializing keyboard input
 		this.input = input;
@@ -154,8 +158,13 @@ public class GameController {
 			aEntity.get(k).maxSpeed = Constants.ENEMY_AI_WALK_SPEED;
 		}
 		
-		aEntity.get(2).position.set(90f, 15f);
+		aEntity.get(2).position.set(90f, 16f);
+		aEntity.get(2).patrolPoints.add(new Vector2(86f, 0f));
+		aEntity.get(2).patrolPoints.add(new Vector2(94f, 0f));
+		
 		aEntity.get(3).position.set(94f, 15f);
+		aEntity.get(3).patrolPoints.add(new Vector2(94f, 12f));
+		aEntity.get(3).patrolPoints.add(new Vector2(94f, 18f));
 	}
 	
 	float dt; // deltaTime
@@ -254,7 +263,15 @@ public class GameController {
 			}
 		}
 		
-		// clamping the maximum speed
+		// debug render
+		if (input.buttons[Input.DEBUG_RENDER]) {
+			debugPressed = true;
+		}
+		
+		if (!input.buttons[Input.DEBUG_RENDER] && debugPressed) {
+			debugRender = !debugRender;
+			debugPressed= false;
+		}
 	}
 	
 	public void resetXVelocity(Entity ent) {
@@ -330,7 +347,6 @@ public class GameController {
 					// Checking horizontal collision
 					// Cancel horizontal velocity
 					ent.velocity.x = 0;
-					ent.stateTime = 0;
 					// Update the horizontal position with a slight offset
 					// p1 and p2 have the same x position
 					if (intersectedPoint.x < ent.position.x) {
@@ -350,7 +366,6 @@ public class GameController {
 						ent.position.y - ent.height/2f,
 						intersectedPoint)) { // BOTTOM
 					ent.velocity.x = 0;
-					ent.stateTime = 0;
 					// Update the horizontal position with a slight offset
 					// p1 and p2 have the same x position
 					if (intersectedPoint.x < ent.position.x) {
@@ -381,7 +396,6 @@ public class GameController {
 					}
 					// Do not forget to reset the velocity
 					ent.velocity.y = 0;
-					ent.stateTime = 0;					
 				}
 				if (Intersector.intersectSegments(
 						p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y,
@@ -403,7 +417,6 @@ public class GameController {
 					}
 					// Don't forget to reset the velocity to 0
 					ent.velocity.y = 0;
-					ent.stateTime = 0;
 				}
 			}
 		}

@@ -19,7 +19,7 @@ public class Constants {
 	// ======= ALL RELATED TO ENTITIES =======
 	
 	public static final int GIRL_ID = 1;
-	public static final float GIRL_WALK_SPEED = .17f;
+	public static final float GIRL_WALK_SPEED = .14f;
 	public static final float GIRL_WIDTH = 1f;
 	public static final float GIRL_HEIGHT = 1.5f;
 	
@@ -35,7 +35,7 @@ public class Constants {
 	public static final float CHILDREN_AI_HEIGHT = 1.5f;
 	
 	public static final int ENEMY_AI_ID = 3;
-	public static final float ENEMY_AI_WALK_SPEED = .14f;
+	public static final float ENEMY_AI_WALK_SPEED = .09f;
 	public static final float ENEMY_AI_WIDTH = 1.5f;
 	public static final float ENEMY_AI_HEIGHT = 2f;
 }

@@ -236,6 +236,7 @@ public class GameRenderer {
 	private void entityCollisionRenderer() {
 		for (Entity ent : controller.aEntity) {
 			renderCollisionBounds(ent);
+			renderPatrolPoints(ent);
 		}
 	}
 	
@@ -264,6 +265,21 @@ public class GameRenderer {
 				ent.position.y - ent.height/2f - Math.abs(ent.velocity.y) - ent.offset,
 				ent.position.x + ent.width/2f,
 				ent.position.y + ent.height/2f + Math.abs(ent.velocity.y) + ent.offset);
+	}
+	
+	private void renderPatrolPoints(Entity ent) {
+		sr.setColor(Color.CYAN);
+		if (!ent.patrolPoints.isEmpty()) {
+			for (int k = 0; k < ent.patrolPoints.size()-1; k++) {
+				// Let's render a circle
+				sr.circle(ent.patrolPoints.get(k).x, ent.patrolPoints.get(k).y,
+						.25f, 16);
+				// Let's render a line
+				sr.line(ent.patrolPoints.get(k), ent.patrolPoints.get(k+1));
+			}
+			sr.circle(ent.patrolPoints.getLast().x, ent.patrolPoints.getLast().y,
+					.25f, 16);
+		}
 	}
 	
 	private void renderMapPoints() {

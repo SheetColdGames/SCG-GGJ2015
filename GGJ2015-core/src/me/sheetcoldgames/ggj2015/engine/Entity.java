@@ -1,6 +1,7 @@
 package me.sheetcoldgames.ggj2015.engine;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -30,7 +31,8 @@ public int id;
 	public DIRECTION horizontalDir;
 	public DIRECTION verticalDir;
 	
-	public ArrayList<Vector2> followPoints;
+	public LinkedList<Vector2> patrolPoints;
+	public int currentPatrolPoint = 0;
 	
 	public Entity() {
 		position = new Vector2();
@@ -47,7 +49,7 @@ public int id;
 		horizontalDir = DIRECTION.RIGHT;
 		verticalDir = DIRECTION.DOWN;
 		
-		followPoints = new ArrayList<Vector2>();
+		patrolPoints = new LinkedList<Vector2>();
 	}
 	
 
