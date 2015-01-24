@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import me.sheetcoldgames.ggj2015.Constants;
 import me.sheetcoldgames.ggj2015.Input;
+import me.sheetcoldgames.ggj2015.engine.ACTION;
 import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;
 import me.sheetcoldgames.ggj2015.engine.SheetCamera;
@@ -14,6 +15,8 @@ import me.sheetcoldgames.ggj2015.engine.SheetPoint;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -38,6 +41,10 @@ public class GameController {
 	
 	AIController aiController;
 	
+	public TiledMap map;
+	public int[] backgroundLayer;
+	public int[] foregroundLayer;
+	
 	public GameController(Input input) {
 		// initializing keyboard input
 		this.input = input;
@@ -56,6 +63,16 @@ public class GameController {
 		initCamera();
 		
 		aiController = new AIController(this);
+		
+		// Let's initialize the map
+		map = new TmxMapLoader().load("map.tmx");
+		
+		backgroundLayer = new int[2];
+		backgroundLayer[0] = 0;
+		backgroundLayer[1] = 1;
+		
+		foregroundLayer = new int[1];
+		foregroundLayer[0] = 2;
 	}
 	
 	/**
@@ -132,8 +149,8 @@ public class GameController {
 		for (int k = aEntity.size(); k < t; k++) {
 			aEntity.add(new Entity());
 			aEntity.get(k).id 		= Constants.ENEMY_AI_ID;
-			aEntity.get(k).width 	= Constants.ENEMY_AI_WIDTH/2f;
-			aEntity.get(k).height 	= Constants.ENEMY_AI_HEIGHT/2f;
+			aEntity.get(k).width 	= Constants.ENEMY_AI_WIDTH;
+			aEntity.get(k).height 	= Constants.ENEMY_AI_HEIGHT;
 			aEntity.get(k).maxSpeed = Constants.ENEMY_AI_WALK_SPEED;
 		}
 		
@@ -189,7 +206,8 @@ public class GameController {
 		}
 	}
 	
-	private void handleInput(Entity ent, int controlScheme, int id) {		
+	private void handleInput(Entity ent, int controlScheme, int id) {
+		ent.action = ACTION.IDLE;
 		if (controlScheme == Constants.INPUT_ARROWS) {
 			// horizontal motion
 			if (input.buttons[Input.RIGHT] ^ input.buttons[Input.LEFT]) {
@@ -248,11 +266,15 @@ public class GameController {
 	}
 	
 	public void moveEntity(Entity ent, DIRECTION dir) {
+		ent.action = ACTION.WALK;
+		ent.horizontalDir = DIRECTION.DOWN;
+		ent.verticalDir = DIRECTION.DOWN;
 		if (dir == DIRECTION.RIGHT) {
 			if (ent.velocity.x == 0) {
 				ent.velocity.x = ent.minSpeed;
 			}
 			ent.velocity.x += ent.accel * dt;
+			ent.horizontalDir = DIRECTION.RIGHT;
 			
 			ent.velocity.x = MathUtils.clamp(ent.velocity.x, -ent.maxSpeed, ent.maxSpeed);
 		} else if (dir == DIRECTION.LEFT) {
@@ -260,6 +282,7 @@ public class GameController {
 				ent.velocity.x = -ent.minSpeed;
 			}
 			ent.velocity.x -= ent.accel* dt;
+			ent.horizontalDir = DIRECTION.LEFT;
 			
 			ent.velocity.x = MathUtils.clamp(ent.velocity.x, -ent.maxSpeed, ent.maxSpeed);
 		} else if (dir == DIRECTION.UP) {
@@ -267,6 +290,7 @@ public class GameController {
 				ent.velocity.y = ent.minSpeed;
 			}
 			ent.velocity.y += ent.accel * dt;
+			ent.verticalDir = DIRECTION.UP;
 			
 			ent.velocity.y = MathUtils.clamp(ent.velocity.y, -ent.maxSpeed, ent.maxSpeed);
 		} else if (dir == DIRECTION.DOWN) {
@@ -274,12 +298,14 @@ public class GameController {
 				ent.velocity.y = -ent.minSpeed;
 			}
 			ent.velocity.y -= ent.accel * dt;
+			ent.verticalDir = DIRECTION.DOWN;
 			
 			ent.velocity.y = MathUtils.clamp(ent.velocity.y, -ent.maxSpeed, ent.maxSpeed);
 		}
 	}
 	
 	protected void updateEntityPosition(Entity ent) {
+		ent.stateTime += (Gdx.graphics.getDeltaTime() + ent.accel/120f);
 		// This variable should be outside to avoid constant creation of new objects
 		Vector2 newEntPosition = new Vector2(
 				ent.position.x + ent.velocity.x, 
@@ -304,6 +330,7 @@ public class GameController {
 					// Checking horizontal collision
 					// Cancel horizontal velocity
 					ent.velocity.x = 0;
+					ent.stateTime = 0;
 					// Update the horizontal position with a slight offset
 					// p1 and p2 have the same x position
 					if (intersectedPoint.x < ent.position.x) {
@@ -323,6 +350,7 @@ public class GameController {
 						ent.position.y - ent.height/2f,
 						intersectedPoint)) { // BOTTOM
 					ent.velocity.x = 0;
+					ent.stateTime = 0;
 					// Update the horizontal position with a slight offset
 					// p1 and p2 have the same x position
 					if (intersectedPoint.x < ent.position.x) {
@@ -353,7 +381,7 @@ public class GameController {
 					}
 					// Do not forget to reset the velocity
 					ent.velocity.y = 0;
-					
+					ent.stateTime = 0;					
 				}
 				if (Intersector.intersectSegments(
 						p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y,
@@ -375,6 +403,7 @@ public class GameController {
 					}
 					// Don't forget to reset the velocity to 0
 					ent.velocity.y = 0;
+					ent.stateTime = 0;
 				}
 			}
 		}

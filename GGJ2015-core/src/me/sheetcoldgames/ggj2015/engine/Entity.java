@@ -21,6 +21,15 @@ public int id;
 	public float maxSpeed;
 	public float minSpeed;
 	
+	public float stateTime = 0f;
+	
+	public boolean movingUp = false;
+	public boolean movingRight = true;
+	
+	public ACTION action;
+	public DIRECTION horizontalDir;
+	public DIRECTION verticalDir;
+	
 	public ArrayList<Vector2> followPoints;
 	
 	public Entity() {
@@ -33,6 +42,10 @@ public int id;
 		minSpeed = offset / 4f;
 		
 		accel = 1.f;
+		
+		action = ACTION.IDLE;
+		horizontalDir = DIRECTION.RIGHT;
+		verticalDir = DIRECTION.DOWN;
 		
 		followPoints = new ArrayList<Vector2>();
 	}

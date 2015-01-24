@@ -5,10 +5,11 @@ public class Constants {
 	public static final int WINDOW_HEIGHT = 480;
 	public static final String WINDOW_TITLE = "G976";
 	
-	public static final int TILE_SIZE = 32; 
+	public static final int TILE_SIZE = 16;
+	public static final float SCALE = 2;
 	
-	public static final float VIEWPORT_WIDTH = WINDOW_WIDTH / TILE_SIZE;
-	public static final float VIEWPORT_HEIGHT= WINDOW_HEIGHT/ TILE_SIZE;
+	public static final float VIEWPORT_WIDTH = WINDOW_WIDTH / (TILE_SIZE * SCALE);
+	public static final float VIEWPORT_HEIGHT= WINDOW_HEIGHT / (TILE_SIZE * SCALE);
 	
 	public static final int INPUT_ARROWS = 1;
 	public static final int INPUT_WASD = 2;
