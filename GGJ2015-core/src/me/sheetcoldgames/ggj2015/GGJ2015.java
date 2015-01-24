@@ -40,10 +40,13 @@ public class GGJ2015 extends ApplicationAdapter {
 	}
 	
 	public void render() {
-		Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1f);
+		//Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		if (menuController.isFinished) {
+		if (menuController.isFinished && menuController.mp) {
+			menuController.netController.update();
+			menuController.netRenderer.render(true);
+		}else if (menuController.isFinished) {
 			gameController.update();
 			gameRenderer.render(gameController.debugRender);
 		} else {
