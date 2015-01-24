@@ -20,7 +20,7 @@ public class Client {
 	private int hostCmd;
 	public String clientStatus;
 	private String hostStatus;
-	private String[] hostHash = {"0","70f", "12f"}; // trocar por variavel de local inicial
+	private String[] hostHash = {"0","70f", "12f","0","0"}; // trocar por variavel de local inicial
 	
 	public Client(String addr){
 		
@@ -51,7 +51,7 @@ public class Client {
 			//clientStatus = clientStatus+"\n";
 			printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
 			printWriter.println(clientStatus);
-			System.out.println("sent: "+clientStatus);
+			//System.out.println("sent: "+clientStatus);
 			printWriter = null;
 			
 			/*//send client player position
@@ -84,7 +84,7 @@ public class Client {
 			bufferedReader = new BufferedReader(new InputStreamReader(is));
 			if(bufferedReader.ready()){
 				hostStatus = bufferedReader.readLine();
-				System.out.println("received: "+hostStatus);
+				//System.out.println("received: "+hostStatus);
 				hostHash = hostStatus.split("/");
 			}
 			

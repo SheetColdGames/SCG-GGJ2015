@@ -6,7 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import me.sheetcoldgames.ggj2015.Constants;
 import me.sheetcoldgames.ggj2015.Input;
+import me.sheetcoldgames.ggj2015.engine.ACTION;
 import me.sheetcoldgames.ggj2015.engine.Client;
+import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;
 import me.sheetcoldgames.ggj2015.engine.Host;
 import me.sheetcoldgames.ggj2015.engine.SheetCamera;
@@ -14,14 +16,20 @@ import me.sheetcoldgames.ggj2015.engine.SheetPoint;
 
 public class NetworkController extends GameController {
 	
-	private static boolean isHost = false; //if true the host will wait for a client
+	public static boolean isHost = false; //if true the host will wait for a client
 	private boolean connected = false;
 	private String hostAddr = "192.168.43.39";
 	
-	public int hostCmd = 99998;
-	private int clientCmd = 99999;
-	private String[] hostStatus = {"0","90f","12f"}; // "cmd/playerPosX/playerPosY"
-	private String[] clientStatus = {"0","94f","12f"}; // "cmd/playerPosX/playerPosY"
+	//private int hostCmd = 99998;
+	//private int clientCmd = 99999;
+	private String hostAnim = ACTION.IDLE.toString();
+	private String clientAnim = ACTION.IDLE.toString();
+	private String hostDirH = DIRECTION.DOWN.toString();
+	private String hostDirV = DIRECTION.DOWN.toString();
+	private String clientDirH = DIRECTION.DOWN.toString();
+	private String clientDirV = DIRECTION.DOWN.toString();
+	private String[] hostStatus = {hostAnim,"90f","12f",hostDirH,hostDirV}; // "cmd/playerPosX/playerPosY"
+	private String[] clientStatus = {clientAnim,"94f","12f",clientDirH,clientDirV}; // "cmd/playerPosX/playerPosY"
 	private Vector2 hostPos = new Vector2(90f,12f);
 	private Vector2 clientPos = new Vector2(94f,12f);
 	
@@ -89,12 +97,17 @@ public class NetworkController extends GameController {
 		if(connected){
 			if(isHost){
 				clientStatus = host.getFromClientSTR();
-				clientCmd = Integer.parseInt(clientStatus[0]);
+				clientAnim = clientStatus[0];
+				clientDirH = clientStatus[3];
+				clientDirV = clientStatus[4];
 				clientPos = new Vector2(Float.parseFloat(clientStatus[1]), Float.parseFloat(clientStatus[2]));
+				
 				//clientPosY = Float.parseFloat(clientStatus[2]);
 			} else{
-				hostStatus = client.getFromHostSTR();// aqui
-				hostCmd = Integer.parseInt(hostStatus[0]);
+				hostStatus = client.getFromHostSTR();
+				hostAnim = hostStatus[0];
+				hostDirH = hostStatus[3];
+				hostDirV = hostStatus[4];
 				hostPos = new Vector2(Float.parseFloat(hostStatus[1]),Float.parseFloat(hostStatus[2]));
 				//hostPosY = Float.parseFloat(hostStatus[2]);
 			}
@@ -207,19 +220,52 @@ public class NetworkController extends GameController {
 		ent.position.x += ent.velocity.x;
 		ent.position.y += ent.velocity.y;
 		if (ent.id == Constants.GIRL_ID && isHost){
+			hostStatus[0] = ent.action.toString();
 			hostStatus[1] = String.valueOf(ent.position.x);
 			hostStatus[2] = String.valueOf(ent.position.y);
+			hostStatus[3] = ent.horizontalDir.toString();
+			hostStatus[4] = ent.verticalDir.toString();
 			
 		} else if(ent.id == Constants.GIRL_ID && !isHost){ 
-			ent.position = hostPos;
+			
+			ent.position = hostPos;			
+			ent.action = checkAnim(hostStatus[0]);
+			ent.horizontalDir = checkDir(hostStatus[3]);
+			ent.verticalDir = checkDir(hostStatus[4]);
 			
 		}
 		if(ent.id == Constants.ROBOT_ID && !isHost){
+			clientStatus[0] = ent.action.toString();
 			clientStatus[1] = String.valueOf(ent.position.x);
 			clientStatus[2] = String.valueOf(ent.position.y);
-			//ent.position = clientPos;
+			clientStatus[3] = ent.horizontalDir.toString();
+			clientStatus[4] = ent.verticalDir.toString();
 		} else if(ent.id == Constants.ROBOT_ID && isHost){
+			
+			ent.action = checkAnim(clientStatus[0]);
 			ent.position = clientPos;
+			ent.horizontalDir = checkDir(clientStatus[3]);
+			ent.verticalDir = checkDir(clientStatus[4]);
+		}
+	}
+	
+	private ACTION checkAnim(String status){
+		if (status.equals(ACTION.WALK.toString())){
+			return ACTION.WALK;
+		} else{
+			return ACTION.IDLE;
+		}
+	}
+	
+	private DIRECTION checkDir(String status){
+		if (status.equals(DIRECTION.UP.toString())){
+			return DIRECTION.UP;
+		} else if (status.equals(DIRECTION.DOWN.toString())){
+			return DIRECTION.DOWN;
+		} else if (status.equals(DIRECTION.RIGHT.toString())){
+			return DIRECTION.RIGHT;
+		} else{
+			return DIRECTION.LEFT;
 		}
 	}
 	

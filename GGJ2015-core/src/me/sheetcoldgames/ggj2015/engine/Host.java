@@ -25,7 +25,7 @@ public class Host {
 	private String hostStatus;
 	private InetAddress hostAddress;
 	private PrintWriter printWriter;
-	private String[] clientHash = {"0","90f","12f"};
+	private String[] clientHash = {"0","90f","12f","0","0"};
 	
 	public Host(){
 		try{
@@ -35,7 +35,7 @@ public class Host {
 			return;
 		}
 		
-		System.out.println("Server host address is: "+hostAddress);
+		//System.out.println("Server host address is: "+hostAddress);
 		
 		try{
 			serverSocket = new ServerSocket(PORT,0,hostAddress);
@@ -44,7 +44,7 @@ public class Host {
 			return;
 		}
 		
-		System.out.println("Socket "+serverSocket+ "created.");
+		//System.out.println("Socket "+serverSocket+ "created.");
 	}
 	
 	public InetAddress getAddr(){
@@ -59,7 +59,7 @@ public class Host {
 				return false;
 			}
 			
-			System.out.println("Client "+clientSocket+" has connected.");
+			//System.out.println("Client "+clientSocket+" has connected.");
 			return true;
 	}
 	
@@ -68,7 +68,7 @@ public class Host {
 			hostStatus = String.join("/", hostHash);
 			printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
 			printWriter.println(hostStatus);
-			System.out.println("sent: "+hostStatus);
+			//System.out.println("sent: "+hostStatus);
 			printWriter = null;
 			
 			//printWriter.println(cmd);
