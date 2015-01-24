@@ -45,7 +45,7 @@ public class GGJ2015 extends ApplicationAdapter {
 		
 		if (menuController.isFinished) {
 			gameController.update();
-			gameRenderer.render(true);
+			gameRenderer.render(gameController.debugRender);
 		} else {
 			menuController.update();
 			menuRenderer.render();
