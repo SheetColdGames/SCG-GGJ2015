@@ -34,6 +34,11 @@ public int id;
 	public LinkedList<Vector2> patrolPoints;
 	public int currentPatrolPoint = 0;
 	
+	public boolean leftRay;
+	public boolean rightRay;
+	public boolean topRay;
+	public boolean bottomRay;
+	
 	public Entity() {
 		position = new Vector2();
 		velocity = new Vector2();

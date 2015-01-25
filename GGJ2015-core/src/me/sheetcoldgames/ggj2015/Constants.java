@@ -1,5 +1,7 @@
 package me.sheetcoldgames.ggj2015;
 
+import com.badlogic.gdx.math.Vector2;
+
 public class Constants {
 	public static final int WINDOW_WIDTH = 640;
 	public static final int WINDOW_HEIGHT = 480;
@@ -14,7 +16,7 @@ public class Constants {
 	public static final int INPUT_ARROWS = 1;
 	public static final int INPUT_WASD = 2;
 	
-	public static final String PHYSICAL_MAP = "map.fis";
+	public static final String PHYSICAL_MAP = "level1.fis";
 	
 	// ======= ALL RELATED TO ENTITIES =======
 	
@@ -34,8 +36,13 @@ public class Constants {
 	public static final float CHILDREN_AI_WIDTH = 1.f;
 	public static final float CHILDREN_AI_HEIGHT = 1.5f;
 	
-	public static final int ENEMY_AI_ID = 3;
-	public static final float ENEMY_AI_WALK_SPEED = .09f;
-	public static final float ENEMY_AI_WIDTH = 1.5f;
-	public static final float ENEMY_AI_HEIGHT = 2f;
+	public static final int BLUE_ENEMY_AI_ID = 3;
+	public static final float BLUE_ENEMY_AI_WALK_SPEED = .09f;
+	public static final float BLUE_ENEMY_AI_WIDTH = 1.5f;
+	public static final float BLUE_ENEMY_AI_HEIGHT = 2f;
+	
+	public static final int YELLOW_ENEMY_AI_ID = 4;
+	public static final float YELLOW_ENEMY_AI_WALK_SPEED = .09f;
+	public static final float YELLOW_ENEMY_AI_WIDTH = 1.5f;
+	public static final float YELLOW_ENEMY_AI_HEIGHT = 2f;
 }

@@ -45,6 +45,9 @@ public class GameController {
 	public int[] backgroundLayer;
 	public int[] foregroundLayer;
 	
+	public float yellowEnemyAttackDuration = .9f;
+	public float blueEnemyAttackDuration = .4f;
+	
 	// misc
 	public boolean debugRender = true;
 	boolean debugPressed = false;
@@ -69,7 +72,7 @@ public class GameController {
 		aiController = new AIController(this);
 		
 		// Let's initialize the map
-		map = new TmxMapLoader().load("map.tmx");
+		map = new TmxMapLoader().load("level1.tmx");
 		
 		backgroundLayer = new int[2];
 		backgroundLayer[0] = 0;
@@ -136,7 +139,8 @@ public class GameController {
 		aEntity.get(0).width 	= Constants.GIRL_WIDTH;
 		aEntity.get(0).height 	= Constants.GIRL_HEIGHT;
 		aEntity.get(0).maxSpeed = Constants.GIRL_WALK_SPEED;
-		aEntity.get(0).position.set(37f, 3f);
+		// aEntity.get(0).position.set(37f, 3f);
+		aEntity.get(0).position.set(15f, 20f);
 		currentGirlIndex = 0;
 		
 		// This is the ROBOT
@@ -149,22 +153,40 @@ public class GameController {
 		currentRobotIndex = 1;
 		
 		// Then, for a new set of enemies, we keep adding them in for loops
-		int t = aEntity.size()+2;
-		for (int k = aEntity.size(); k < t; k++) {
+		int total = aEntity.size()+1;
+		for (int k = aEntity.size(); k < total; k++) {
 			aEntity.add(new Entity());
-			aEntity.get(k).id 		= Constants.ENEMY_AI_ID;
-			aEntity.get(k).width 	= Constants.ENEMY_AI_WIDTH;
-			aEntity.get(k).height 	= Constants.ENEMY_AI_HEIGHT;
-			aEntity.get(k).maxSpeed = Constants.ENEMY_AI_WALK_SPEED;
+			aEntity.get(k).id 		= Constants.BLUE_ENEMY_AI_ID;
+			aEntity.get(k).width 	= Constants.BLUE_ENEMY_AI_WIDTH;
+			aEntity.get(k).height 	= Constants.BLUE_ENEMY_AI_HEIGHT;
+			aEntity.get(k).maxSpeed = Constants.BLUE_ENEMY_AI_WALK_SPEED + MathUtils.random() * .07f;
 		}
 		
 		aEntity.get(2).position.set(6f, 7f);
-		aEntity.get(2).patrolPoints.add(new Vector2(12f, 16f));
-		aEntity.get(2).patrolPoints.add(new Vector2(18f, 16f));
+		aEntity.get(2).patrolPoints.add(new Vector2(6f, 25f));
+		aEntity.get(2).patrolPoints.add(new Vector2(15f, 25f));
+		aEntity.get(2).patrolPoints.add(new Vector2(15f, 16f));
+		aEntity.get(2).patrolPoints.add(new Vector2(6f, 16f));
 		
+		total = aEntity.size()+1;
+		for (int k = aEntity.size(); k < total; k++) {
+			aEntity.add(new Entity());
+			aEntity.get(k).id 		= Constants.YELLOW_ENEMY_AI_ID;
+			aEntity.get(k).width 	= Constants.YELLOW_ENEMY_AI_WIDTH;
+			aEntity.get(k).height 	= Constants.YELLOW_ENEMY_AI_HEIGHT;
+			aEntity.get(k).maxSpeed = Constants.YELLOW_ENEMY_AI_WALK_SPEED + MathUtils.random() * .07f;;
+		}
+		
+		aEntity.get(3).position.set(15f, 7f);
+		aEntity.get(3).patrolPoints.add(new Vector2(15f, 25f));
+		aEntity.get(3).patrolPoints.add(new Vector2(24f, 25f));
+		aEntity.get(3).patrolPoints.add(new Vector2(24f, 16f));
+		aEntity.get(3).patrolPoints.add(new Vector2(15f, 16f));
+		/*
 		aEntity.get(3).position.set(19f, 6f);
 		aEntity.get(3).patrolPoints.add(new Vector2(16f, 15f));
 		aEntity.get(3).patrolPoints.add(new Vector2(24f, 15f));
+		*/
 	}
 	
 	float dt; // deltaTime
@@ -206,7 +228,7 @@ public class GameController {
 				handleInput(ent, girlControlScheme, currentGirlIndex);
 			} else if (ent.id == Constants.ROBOT_ID) {
 				handleInput(ent, robotControlScheme, currentRobotIndex);
-			} else if (ent.id == Constants.ENEMY_AI_ID) {
+			} else {
 				aiController.updateEnemy(ent, groupPoints, aEntity.get(currentGirlIndex), aEntity.get(currentRobotIndex));				
 			}
 			// after we make sure that every entity has used the correct method,
@@ -330,6 +352,9 @@ public class GameController {
 		
 		Vector2 intersectedPoint = new Vector2();
 		
+		// reset all the points
+		ent.topRay = ent.bottomRay = ent.leftRay = ent.rightRay = false;
+		
 		// walk through all the walls
 		for (int currentGroup = 0; currentGroup < groupPoints.size(); currentGroup++) {
 			for (int currentPoint = 0; currentPoint < groupPoints.get(currentGroup).size()-1; currentPoint++) {
@@ -347,6 +372,7 @@ public class GameController {
 					// Checking horizontal collision
 					// Cancel horizontal velocity
 					ent.velocity.x = 0;
+					ent.topRay = true;
 					// Update the horizontal position with a slight offset
 					// p1 and p2 have the same x position
 					if (intersectedPoint.x < ent.position.x) {
@@ -366,6 +392,7 @@ public class GameController {
 						ent.position.y - ent.height/2f,
 						intersectedPoint)) { // BOTTOM
 					ent.velocity.x = 0;
+					ent.bottomRay = true;
 					// Update the horizontal position with a slight offset
 					// p1 and p2 have the same x position
 					if (intersectedPoint.x < ent.position.x) {
@@ -396,6 +423,7 @@ public class GameController {
 					}
 					// Do not forget to reset the velocity
 					ent.velocity.y = 0;
+					ent.leftRay = true;
 				}
 				if (Intersector.intersectSegments(
 						p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y,
@@ -405,7 +433,6 @@ public class GameController {
 						ent.position.y + ent.height/2f + Math.abs(ent.velocity.y) + ent.offset,
 						intersectedPoint)) { // RIGHT
 					// Checking vertical collision
-					
 					// Update the vertical position with a slight offset
 					if (intersectedPoint.y < ent.position.y) {
 						// this value is smaller than the radius of the ent (else, it wouldn't
@@ -417,6 +444,7 @@ public class GameController {
 					}
 					// Don't forget to reset the velocity to 0
 					ent.velocity.y = 0;
+					ent.rightRay = true;
 				}
 			}
 		}

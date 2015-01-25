@@ -45,12 +45,25 @@ public class GameRenderer {
 	Animation robotLeftAnim;
 	// =======
 	
-	// G976 =======
-	Texture soldierSpritesheet;
-	Animation soldierDownAnim;
-	Animation soldierUpAnim;
-	Animation soldierRightAnim;
-	Animation soldierLeftAnim;
+	// Blue Soldier =======
+	Texture blueSoldierSpritesheet;
+	Animation blueSoldierDownAnim;
+	Animation blueSoldierUpAnim;
+	Animation blueSoldierRightAnim;
+	Animation blueSoldierLeftAnim;
+	// =======
+	
+	// Yellow Soldier =======
+	Texture yellowSoldierSpritesheet;
+	Animation yellowSoldierDownAnim;
+	Animation yellowSoldierUpAnim;
+	Animation yellowSoldierRightAnim;
+	Animation yellowSoldierLeftAnim;
+	
+	Animation yellowSoldierDownThrowAnim;
+	Animation yellowSoldierUpThrowAnim;
+	Animation yellowSoldierLeftThrowAnim;
+	Animation yellowSoldierRightThrowAnim;
 	// =======
 	
 	public GameRenderer(GameController controller) {
@@ -137,27 +150,81 @@ public class GameRenderer {
 	}
 	
 	private void initSoldiersAnimations() {
-		soldierSpritesheet = new Texture("soldier_spritesheet.png");
+		// ======= BLUE SOLDIER =======
+		blueSoldierSpritesheet = new Texture("blue_soldier_spritesheet.png");
 		
-		TextureRegion downRegions[] = TextureRegion.split(soldierSpritesheet, 24, 32)[0];
-		soldierDownAnim = new Animation(1/6f, downRegions);
-		soldierDownAnim.setPlayMode(PlayMode.LOOP);
+		TextureRegion blueDownRegions[] = TextureRegion.split(blueSoldierSpritesheet, 24, 32)[0];
+		blueSoldierDownAnim = new Animation(1/6f, blueDownRegions);
+		blueSoldierDownAnim.setPlayMode(PlayMode.LOOP);
 		
-		TextureRegion upRegions[] = TextureRegion.split(soldierSpritesheet, 24, 32)[1];
-		soldierUpAnim = new Animation(1/6f, upRegions);
-		soldierUpAnim.setPlayMode(PlayMode.LOOP);
+		TextureRegion blueUpRegions[] = TextureRegion.split(blueSoldierSpritesheet, 24, 32)[1];
+		blueSoldierUpAnim = new Animation(1/6f, blueUpRegions);
+		blueSoldierUpAnim.setPlayMode(PlayMode.LOOP);
 		
-		TextureRegion rightRegions[] = TextureRegion.split(soldierSpritesheet, 24, 32)[2];
-		soldierRightAnim = new Animation(1/6f, rightRegions);
-		soldierRightAnim.setPlayMode(PlayMode.LOOP);
+		TextureRegion blueRightRegions[] = TextureRegion.split(blueSoldierSpritesheet, 24, 32)[2];
+		blueSoldierRightAnim = new Animation(1/6f, blueRightRegions);
+		blueSoldierRightAnim.setPlayMode(PlayMode.LOOP);
 		
-		TextureRegion leftRegions[] = TextureRegion.split(soldierSpritesheet, 24, 32)[2];
+		TextureRegion blueLeftRegions[] = TextureRegion.split(blueSoldierSpritesheet, 24, 32)[2];
 		
-		for (int i = 0; i < leftRegions.length; i++) {
-			leftRegions[i].flip(true, false);
+		for (int i = 0; i < blueLeftRegions.length; i++) {
+			blueLeftRegions[i].flip(true, false);
 		}
-		soldierLeftAnim = new Animation(1/6f, leftRegions);
-		soldierLeftAnim.setPlayMode(PlayMode.LOOP);
+		blueSoldierLeftAnim = new Animation(1/6f, blueLeftRegions);
+		blueSoldierLeftAnim.setPlayMode(PlayMode.LOOP);
+		
+		// ======= YELLOW SOLDIER =======
+		yellowSoldierSpritesheet = new Texture("yellow_soldier_spritesheet.png");
+		
+		TextureRegion yellowDownRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[0];
+		yellowSoldierDownAnim = new Animation(1/6f, yellowDownRegions[0], yellowDownRegions[1],
+				yellowDownRegions[2], yellowDownRegions[3]);
+		yellowSoldierDownAnim.setPlayMode(PlayMode.LOOP);
+		
+		TextureRegion yellowUpRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[1];
+		yellowSoldierUpAnim = new Animation(1/6f, yellowUpRegions[0], yellowUpRegions[1],
+				yellowUpRegions[2], yellowUpRegions[3]);
+		yellowSoldierUpAnim.setPlayMode(PlayMode.LOOP);
+		
+		TextureRegion yellowRightRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[2];
+		yellowSoldierRightAnim = new Animation(1/6f, yellowRightRegions[0], yellowRightRegions[1],
+				yellowRightRegions[2], yellowRightRegions[3]);
+		yellowSoldierRightAnim.setPlayMode(PlayMode.LOOP);
+		
+		TextureRegion yellowLeftRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[2];
+		for (int i = 0; i < yellowLeftRegions.length; i++) {
+			yellowLeftRegions[i].flip(true, false);
+		}
+		yellowSoldierLeftAnim = new Animation(1/6f, yellowLeftRegions[0], yellowLeftRegions[1],
+				yellowLeftRegions[2], yellowLeftRegions[3]);
+		yellowSoldierLeftAnim.setPlayMode(PlayMode.LOOP);
+		
+		// ======= throwing to the BOTTOM =======
+		TextureRegion yellowDownThrowRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[3];
+		yellowSoldierDownThrowAnim = new Animation(controller.yellowEnemyAttackDuration/(float) yellowDownThrowRegions.length,
+				yellowDownThrowRegions);
+		yellowSoldierDownThrowAnim.setPlayMode(PlayMode.NORMAL);
+		
+		// ======= throwing to the TOP =======
+		TextureRegion yellowUpThrowRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[4];
+		yellowSoldierUpThrowAnim = new Animation(controller.yellowEnemyAttackDuration/(float) yellowUpThrowRegions.length,
+				yellowUpThrowRegions);
+		yellowSoldierUpThrowAnim.setPlayMode(PlayMode.NORMAL);
+		
+		// ======= throwing to the RIGHT =======
+		TextureRegion yellowRightThrowRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[5];
+		yellowSoldierRightThrowAnim = new Animation(controller.yellowEnemyAttackDuration/yellowRightThrowRegions.length,
+				yellowRightThrowRegions);
+		yellowSoldierRightThrowAnim.setPlayMode(PlayMode.NORMAL);
+		
+		// ======= throwing to the LEFT =======
+		TextureRegion yellowLeftThrowRegions[] = TextureRegion.split(yellowSoldierSpritesheet, 24, 32)[5];
+		for (int i = 0; i < yellowLeftThrowRegions.length; i++) {
+			yellowLeftThrowRegions[i].flip(true, false);
+		}
+		yellowSoldierLeftThrowAnim = new Animation(controller.yellowEnemyAttackDuration / (float) yellowLeftThrowRegions.length,
+				yellowLeftThrowRegions);
+		yellowSoldierLeftThrowAnim.setPlayMode(PlayMode.NORMAL);
 	}
 	
 	public void render(boolean debug) {
@@ -179,8 +246,10 @@ public class GameRenderer {
 				currentFrame = currentGirlFrame(ent);
 			} else if (ent.id == Constants.ROBOT_ID) {
 				currentFrame = currentRobotFrame(ent);
-			} else {
-				currentFrame = currentSoldierFrame(ent);
+			} else if (ent.id == Constants.BLUE_ENEMY_AI_ID) {
+				currentFrame = currentBlueSoldierFrame(ent);
+			} else { // if (ent.id == Constants.YELLOW_ENEMY_AI_ID) {
+				currentFrame = currentYellowSoldierFrame(ent);
 			}
 			sb.draw(currentFrame,
 					ent.position.x - ent.width/2f, ent.position.y - ent.height/2f,
@@ -264,29 +333,71 @@ public class GameRenderer {
 		return null;
 	}
 	
-	private TextureRegion currentSoldierFrame(Entity ent) {
+	private TextureRegion currentBlueSoldierFrame(Entity ent) {
 		if (ent.action == ACTION.WALK) {
 			if (ent.verticalDir == DIRECTION.UP) {
-				return soldierUpAnim.getKeyFrame(ent.stateTime);
+				return blueSoldierUpAnim.getKeyFrame(ent.stateTime);
 			} else {
 				if (ent.horizontalDir == DIRECTION.RIGHT) {
-					return soldierRightAnim.getKeyFrame(ent.stateTime);
+					return blueSoldierRightAnim.getKeyFrame(ent.stateTime);
 				} else if (ent.horizontalDir == DIRECTION.LEFT) {
-					return soldierLeftAnim.getKeyFrame(ent.stateTime);
+					return blueSoldierLeftAnim.getKeyFrame(ent.stateTime);
 				} else {
-					return soldierDownAnim.getKeyFrame(ent.stateTime);
+					return blueSoldierDownAnim.getKeyFrame(ent.stateTime);
 				}
 			}
 		} else if (ent.action == ACTION.IDLE) {
 			if (ent.verticalDir == DIRECTION.UP) {
-				return soldierUpAnim.getKeyFrame(0f);
+				return blueSoldierUpAnim.getKeyFrame(0f);
 			} else {
 				if (ent.horizontalDir == DIRECTION.RIGHT) {
-					return soldierRightAnim.getKeyFrame(0f);
+					return blueSoldierRightAnim.getKeyFrame(0f);
 				} else if (ent.horizontalDir == DIRECTION.LEFT) {
-					return soldierLeftAnim.getKeyFrame(0f);
+					return blueSoldierLeftAnim.getKeyFrame(0f);
 				} else {
-					return soldierDownAnim.getKeyFrame(0f);
+					return blueSoldierDownAnim.getKeyFrame(0f);
+				}
+			}
+		}
+		return null;
+	}
+	
+	private TextureRegion currentYellowSoldierFrame(Entity ent) {
+		if (ent.action == ACTION.ATTACK) {
+			if (ent.verticalDir == DIRECTION.UP) {
+				return yellowSoldierUpThrowAnim.getKeyFrame(ent.stateTime);
+			} else {
+				if (ent.horizontalDir == DIRECTION.RIGHT) {
+					return yellowSoldierRightThrowAnim.getKeyFrame(ent.stateTime);
+				} else if (ent.horizontalDir == DIRECTION.LEFT) {
+					return yellowSoldierLeftThrowAnim.getKeyFrame(ent.stateTime);
+				} else {
+					return yellowSoldierDownThrowAnim.getKeyFrame(ent.stateTime);
+				}
+			}
+		}
+		if (ent.action == ACTION.WALK) {
+			if (ent.verticalDir == DIRECTION.UP) {
+				return yellowSoldierUpAnim.getKeyFrame(ent.stateTime);
+			} else {
+				if (ent.horizontalDir == DIRECTION.RIGHT) {
+					return yellowSoldierRightAnim.getKeyFrame(ent.stateTime);
+				} else if (ent.horizontalDir == DIRECTION.LEFT) {
+					return yellowSoldierLeftAnim.getKeyFrame(ent.stateTime);
+				} else {
+					return yellowSoldierDownAnim.getKeyFrame(ent.stateTime);
+				}
+			}
+		} else if (ent.action == ACTION.IDLE) {
+			if (ent.verticalDir == DIRECTION.UP) {
+				return yellowSoldierUpAnim.getKeyFrame(0f);
+			} else {
+				if (ent.horizontalDir == DIRECTION.RIGHT) {
+					return yellowSoldierRightAnim.getKeyFrame(0f);
+				} else if (ent.horizontalDir == DIRECTION.LEFT) {
+					return yellowSoldierLeftAnim.getKeyFrame(0f);
+				} else {
+					return yellowSoldierDownAnim.getKeyFrame(0f);
 				}
 			}
 		}

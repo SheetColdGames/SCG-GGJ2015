@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import me.sheetcoldgames.ggj2015.Constants;
+import me.sheetcoldgames.ggj2015.engine.ACTION;
 import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;
 import me.sheetcoldgames.ggj2015.engine.SheetPoint;
@@ -42,16 +43,8 @@ GameController controller;
 		currentRadius = new Circle();
 		currentRadius.radius = .25f;
 		enemyRadius = new Circle();
-		enemyRadius.radius = 10f;
-		
-		controller.aEntity.get(2).patrolPoints.clear();
-		controller.aEntity.get(2).patrolPoints.add(new Vector2(92f, 32f));
-		controller.aEntity.get(2).patrolPoints.add(new Vector2(92f, 38f));
-		
-		// controller.girlCamera.zoom =  2f;
+		enemyRadius.radius = 4f;
 	}
-	
-	
 	
 	/**
 	 * This method uses the groupPoints containing all the points that exist in
@@ -66,26 +59,73 @@ GameController controller;
 			ArrayList<LinkedList<SheetPoint>> groupPoints, Entity girl,
 			Entity robot) {
 		if (enemy.patrolPoints.size() != 0) {
-			// Pursuiting(enemy,girl, robot);
-			updatePatrolPoints(enemy, girl, robot);
-			followPatrolPoints(enemy);
+			enemyRadius.x = enemy.position.x;
+			enemyRadius.y = enemy.position.y;
+			// updatePatrolPoints(enemy, girl, robot);
+			if (enemy.action != ACTION.ATTACK) {
+				if (enemyRadius.contains(girl.position.x, girl.position.y) || 
+						enemyRadius.contains(robot.position.x, robot.position.y)) {
+					if (seeEntity(enemy.position.x, enemy.position.y, girl.position.x, girl.position.y)) {
+						System.out.println("I'm supposed to attack the girl now");
+						if (enemy.id == Constants.YELLOW_ENEMY_AI_ID) {
+							enemy.velocity.set(0f, 0f);
+							enemy.action = ACTION.ATTACK;
+							enemy.stateTime = 0f;
+							if (enemy.position.y < girl.position.y) {
+								enemy.verticalDir = DIRECTION.UP;
+							} else if ((int) enemy.position.x < (int) girl.position.x) {
+								enemy.horizontalDir = DIRECTION.RIGHT;
+							} else if ((int) enemy.position.x > (int) girl.position.x) {
+								enemy.horizontalDir = DIRECTION.LEFT;
+							} else {
+								enemy.horizontalDir = DIRECTION.DOWN;
+							}
+						}
+					} else if (seeEntity(enemy.position.x, enemy.position.y, robot.position.x, robot.position.y)) {
+						System.out.println("I'm supposed to attack the robot now");
+					} 
+				} else {
+					followPatrolPoints(enemy);
+				}
+			} else {
+				
+				if (enemy.position.y < girl.position.y) {
+					enemy.verticalDir = DIRECTION.UP;					
+				} else if ((int) enemy.position.x < (int) girl.position.x) {
+					enemy.horizontalDir = DIRECTION.RIGHT;
+				} else if ((int) enemy.position.x > (int) girl.position.x) {
+					enemy.horizontalDir = DIRECTION.LEFT;
+				} else {
+					enemy.horizontalDir = DIRECTION.DOWN;
+				}
+				if (enemy.id == Constants.BLUE_ENEMY_AI_ID) {
+					if (enemy.stateTime > controller.blueEnemyAttackDuration) {
+						enemy.action = ACTION.IDLE;
+					}
+				} else if (enemy.id == Constants.YELLOW_ENEMY_AI_ID) {
+					if (enemy.stateTime > controller.yellowEnemyAttackDuration) {
+						enemy.action = ACTION.IDLE;
+					}
+				}
+			}
 		} else {
 			System.out.println("out of bounds");
 		}
 	}
 	
+	/*
 	private void updatePatrolPoints(Entity enemy, Entity girl, Entity robot) {
 		enemyRadius.x = enemy.position.x;
 		enemyRadius.y = enemy.position.y;
 		
 		if (enemyRadius.contains(girl.position)) {
-			Vector2 intersectedPoint = seeGirl(enemy.position.x, enemy.position.y,
+			Vector2 intersectedPoint = seeGirl(enemy, enemy.position.x, enemy.position.y,
 					girl.position.x, girl.position.y);
 			if (intersectedPoint != null) {
 				enemy.patrolPoints.clear();
 				enemy.currentPatrolPoint = 0;
 				enemy.patrolPoints.add(new Vector2((int)enemy.position.x, (int)enemy.position.y));
-				if (intersectedPoint.x >enemy.position.x) {
+				if (intersectedPoint.x > enemy.position.x) {
 					controller.moveEntity(enemy, DIRECTION.LEFT);
 				} else if (intersectedPoint.x < enemy.position.x) {
 					controller.moveEntity(enemy, DIRECTION.RIGHT);
@@ -99,15 +139,15 @@ GameController controller;
 				enemy.patrolPoints.add(new Vector2());
 				enemy.patrolPoints.add(new Vector2(girl.position.x, girl.position.y));
 			}
-			
 		}
 		
 		if (enemyRadius.contains(robot.position)) {
 			
 		}
 	}
+	*/
 	
-	private Vector2 seeGirl(float ox, float oy, float dx, float dy) {
+	private boolean seeEntity(float ox, float oy, float dx, float dy) {
 		Vector2 intersectedPoint = new Vector2(0f, 0f);
 		for (int currentGroup = 0; currentGroup < controller.groupPoints.size(); currentGroup++) {
 			for (int currentPoint = 0; currentPoint < controller.groupPoints.get(currentGroup).size() - 1; currentPoint++) {
@@ -118,10 +158,12 @@ GameController controller;
 						controller.groupPoints.get(currentGroup).get(currentPoint+1).getX(),
 						controller.groupPoints.get(currentGroup).get(currentPoint+1).getY(),
 						intersectedPoint)) {
-					return intersectedPoint;
+					// return intersectedPoint;
+					return false;
 				}
+				/*
 				if (Intersector.intersectSegments(
-						ox-Constants.ENEMY_AI_WIDTH/2f, oy-Constants.ENEMY_AI_HEIGHT/2f,
+						ox-enemy.width/2f, oy-enemy.height/2f,
 						dx, dy,
 						controller.groupPoints.get(currentGroup).get(currentPoint).getX(),
 						controller.groupPoints.get(currentGroup).get(currentPoint).getY(),
@@ -131,7 +173,7 @@ GameController controller;
 					
 				}
 				if (Intersector.intersectSegments(
-						ox-Constants.ENEMY_AI_WIDTH/2f, oy+Constants.ENEMY_AI_HEIGHT/2f, 
+						ox-enemy.width/2f, oy+enemy.height/2f, 
 						dx, dy,
 						controller.groupPoints.get(currentGroup).get(currentPoint).getX(),
 						controller.groupPoints.get(currentGroup).get(currentPoint).getY(),
@@ -141,7 +183,7 @@ GameController controller;
 					
 				}
 				if (Intersector.intersectSegments(
-						ox+Constants.ENEMY_AI_WIDTH/2f, oy-Constants.ENEMY_AI_HEIGHT/2f, dx, dy,
+						ox+enemy.width/2f, oy-enemy.height/2f, dx, dy,
 						controller.groupPoints.get(currentGroup).get(currentPoint).getX(),
 						controller.groupPoints.get(currentGroup).get(currentPoint).getY(),
 						controller.groupPoints.get(currentGroup).get(currentPoint+1).getX(),
@@ -150,18 +192,18 @@ GameController controller;
 					
 				}
 				if (Intersector.intersectSegments(
-						ox+Constants.ENEMY_AI_WIDTH/2f, oy+Constants.ENEMY_AI_HEIGHT/2f, 
+						ox+enemy.width/2f, oy+enemy.height/2f, 
 						dx, dy,
 						controller.groupPoints.get(currentGroup).get(currentPoint).getX(),
 						controller.groupPoints.get(currentGroup).get(currentPoint).getY(),
 						controller.groupPoints.get(currentGroup).get(currentPoint+1).getX(),
 						controller.groupPoints.get(currentGroup).get(currentPoint+1).getY(),
 						intersectedPoint)) {
-					
 				}
+				*/
 			}
 		}
-		return null;
+		return true;
 	}
 	
 	private void followPatrolPoints(Entity enemy) {
@@ -195,96 +237,33 @@ GameController controller;
 			enemy.velocity.y = 0;
 			enemy.position.x = enemy.patrolPoints.get(enemy.currentPatrolPoint).x;
 			enemy.position.y = enemy.patrolPoints.get(enemy.currentPatrolPoint).y;
-			enemy.currentPatrolPoint++;
-			
-			
+			int previousPoint = enemy.currentPatrolPoint++;
 			
 			if (enemy.currentPatrolPoint == enemy.patrolPoints.size()) {
 				enemy.currentPatrolPoint = 0;
 			}
+			/*
+			Vector2 intersectedPoint = new Vector2();
 			
+			// We check all the points to see if there's any intersection with this point
+			for (int currentGroup = 0; currentGroup < controller.groupPoints.size(); currentGroup++) {
+				for (int currentPoint = 0; currentPoint < controller.groupPoints.get(currentGroup).size() - 1; currentPoint++) {
+					if (Intersector.intersectSegments(
+							enemy.patrolPoints.get(previousPoint).x,
+							enemy.patrolPoints.get(previousPoint).y,
+							enemy.patrolPoints.get(enemy.currentPatrolPoint).x,
+							enemy.patrolPoints.get(enemy.currentPatrolPoint).y,
+							controller.groupPoints.get(currentGroup).get(currentPoint).getX(),
+							controller.groupPoints.get(currentGroup).get(currentPoint).getY(),
+							controller.groupPoints.get(currentGroup).get(currentPoint+1).getX(),
+							controller.groupPoints.get(currentGroup).get(currentPoint+1).getY(),
+							intersectedPoint)) {
+						// it collided, we must create another point for it, let's surround all the
+						// possible combinations and create a new point between this collision point and our destiny
+					}
+				}
+			}
+			*/
 		}
 	}
-	
-	// pursuit the player till last point generated
-	private void Pursuiting(Entity enemy, Entity girl, Entity robot) {
-		enemyRadius.x = enemy.position.x;
-		enemyRadius.y = enemy.position.y;
-		if(enemyRadius.contains(girl.position)) {
-			
-			isPursuiting = true;
-			
-		} else {
-			
-			isPursuiting = false;
-			
-		}
-		
-		if(enemyRadius.contains(robot.position)) {
-			
-			isPursuiting = true;
-			
-		} else {
-			
-			isPursuiting = false;
-			
-		}
-		
-		if(isPursuiting) {
-			System.out.println("pursuit");
-			if(girl.position.x > enemy.position.x) {
-				
-				controller.moveEntity(enemy, DIRECTION.RIGHT);
-				
-			}
-			
-			if(girl.position.x < enemy.position.x) {
-				
-				controller.moveEntity(enemy, DIRECTION.LEFT);
-				
-			}
-			
-			if(girl.position.y > enemy.position.y) {
-				
-				controller.moveEntity(enemy, DIRECTION.UP);
-				
-			}
-			
-			if(girl.position.y < enemy.position.y) {
-				
-				controller.moveEntity(enemy, DIRECTION.DOWN);
-				
-			}
-			
-			if(robot.position.x > enemy.position.x) {
-				
-				controller.moveEntity(enemy, DIRECTION.RIGHT);
-				
-			}
-			
-			if(robot.position.x < enemy.position.x) {
-				
-				controller.moveEntity(enemy, DIRECTION.LEFT);
-				
-			}
-			
-			if(robot.position.y > enemy.position.y) {
-				
-				controller.moveEntity(enemy, DIRECTION.UP);
-				
-			}
-			
-			if(robot.position.y < enemy.position.y) {
-				
-				controller.moveEntity(enemy, DIRECTION.DOWN);
-				
-			}
-			
-			
-			
-		}
-		
-	
-	}
-
 }
