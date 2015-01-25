@@ -39,7 +39,7 @@ public class GameController {
 	public ArrayList<LinkedList<SheetPoint>> groupPoints;
 	LinkedList<SheetPoint> currentPoints;
 	
-	AIController aiController;
+	public AIController aiController;
 	
 	public TiledMap map;
 	public int[] backgroundLayer;
@@ -98,7 +98,7 @@ public class GameController {
 		
 	}
 	
-	private void initTestMap(String filename) {
+	protected void initTestMap(String filename) {
 		groupPoints = new ArrayList<LinkedList<SheetPoint>>();
 		// here we'll load the map inside the ArrayList<LinkedList<>>
 		FileHandle handle = Gdx.files.internal(filename);
@@ -126,7 +126,7 @@ public class GameController {
 		}
 	}
 	
-	private void initEntities() {		
+	protected void initEntities() {		
 		// let's make an array of entities
 		aEntity = new ArrayList<Entity>();
 		
@@ -136,7 +136,7 @@ public class GameController {
 		aEntity.get(0).width 	= Constants.GIRL_WIDTH;
 		aEntity.get(0).height 	= Constants.GIRL_HEIGHT;
 		aEntity.get(0).maxSpeed = Constants.GIRL_WALK_SPEED;
-		aEntity.get(0).position.set(90f, 12f);
+		aEntity.get(0).position.set(37f, 3f);
 		currentGirlIndex = 0;
 		
 		// This is the ROBOT
@@ -145,7 +145,7 @@ public class GameController {
 		aEntity.get(1).width 	= Constants.ROBOT_WIDTH;
 		aEntity.get(1).height 	= Constants.ROBOT_HEIGHT;
 		aEntity.get(1).maxSpeed = Constants.ROBOT_WALK_SPEED;
-		aEntity.get(1).position.set(94f, 12f);
+		aEntity.get(1).position.set(31f, 12f);
 		currentRobotIndex = 1;
 		
 		// Then, for a new set of enemies, we keep adding them in for loops
@@ -158,13 +158,13 @@ public class GameController {
 			aEntity.get(k).maxSpeed = Constants.ENEMY_AI_WALK_SPEED;
 		}
 		
-		aEntity.get(2).position.set(90f, 16f);
-		aEntity.get(2).patrolPoints.add(new Vector2(86f, 0f));
-		aEntity.get(2).patrolPoints.add(new Vector2(94f, 0f));
+		aEntity.get(2).position.set(6f, 7f);
+		aEntity.get(2).patrolPoints.add(new Vector2(12f, 16f));
+		aEntity.get(2).patrolPoints.add(new Vector2(18f, 16f));
 		
-		aEntity.get(3).position.set(94f, 15f);
-		aEntity.get(3).patrolPoints.add(new Vector2(94f, 12f));
-		aEntity.get(3).patrolPoints.add(new Vector2(94f, 18f));
+		aEntity.get(3).position.set(19f, 6f);
+		aEntity.get(3).patrolPoints.add(new Vector2(16f, 15f));
+		aEntity.get(3).patrolPoints.add(new Vector2(24f, 15f));
 	}
 	
 	float dt; // deltaTime
@@ -215,7 +215,7 @@ public class GameController {
 		}
 	}
 	
-	private void handleInput(Entity ent, int controlScheme, int id) {
+	protected void handleInput(Entity ent, int controlScheme, int id) {
 		ent.action = ACTION.IDLE;
 		if (controlScheme == Constants.INPUT_ARROWS) {
 			// horizontal motion
