@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 
 
+
+import javax.swing.Renderer;
+
 import me.sheetcoldgames.ggj2015.GameRenderer;
 import me.sheetcoldgames.ggj2015.Input;
 
@@ -14,21 +17,21 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class MenuController {
 	
-	public boolean isFinished = false;
+	public static boolean isFinished = false;
 	public NetworkController netController;
 	public GameRenderer netRenderer;
 	public boolean mp = false;
 	public boolean menuMp = false;
+	public OrthographicCamera camera;
 	
-	OrthographicCamera camera;
 	
-	Input input;
+	public static Input input;
 	
 	public ArrayList<Rectangle> buttons;
 	public ArrayList<Rectangle> buttonsMP;
 	
 	public MenuController(Input input) {
-		camera = new OrthographicCamera(640f, 480f);
+		camera = new OrthographicCamera(480f, 320f);
 		camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0f);
 		camera.update();
 		
@@ -55,6 +58,8 @@ public class MenuController {
 		}
 		
 	}
+	
+	
 	
 	public void initMP(boolean host){
 		NetworkController.isHost = host;
@@ -115,6 +120,8 @@ public class MenuController {
 							mp = true;
 							isFinished = true;
 						}
+						
+						
 						
 						else if (i == 1){
 							initMP(false);

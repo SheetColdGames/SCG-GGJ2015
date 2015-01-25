@@ -28,7 +28,7 @@ public class GGJ2015 extends ApplicationAdapter {
 		
 		Gdx.input.setInputProcessor(input);
 		
-		menuController.isFinished = true;
+		//menuController.isFinished = false;
 	}
 	
 	public void dispose() {
@@ -43,10 +43,10 @@ public class GGJ2015 extends ApplicationAdapter {
 		//Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		if (menuController.isFinished && menuController.mp) {
+		if (MenuController.isFinished && menuController.mp) {
 			menuController.netController.update();
 			menuController.netRenderer.render(true);
-		}else if (menuController.isFinished) {
+		}else if (MenuController.isFinished) {
 			gameController.update();
 			gameRenderer.render(gameController.debugRender);
 		} else {

@@ -1,12 +1,18 @@
 package me.sheetcoldgames.ggj2015.engine;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import me.sheetcoldgames.ggj2015.Constants;
 
 //import me.sheetcoldgames.topdownengine.TopDownEngineShowcase;
 
@@ -20,7 +26,7 @@ public class Client {
 	private int hostCmd;
 	public String clientStatus;
 	private String hostStatus;
-	private String[] hostHash = {"0","70f", "12f","0","0"}; // trocar por variavel de local inicial
+	private String[] hostHash = {"0","31f", "12f","0","0"}; // trocar por variavel de local inicial
 	
 	public Client(String addr){
 		
@@ -64,6 +70,17 @@ public class Client {
 		
 	}
 	
+	public void sendObjectToHost(ArrayList<Entity> obj){
+		try {
+			ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
+			writer.writeObject(obj);
+			writer.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public int getFromHost(){ // TODO:overload with serializable
 		try {
 			bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -73,6 +90,23 @@ public class Client {
 			System.out.println("host -> client error");
 			e.printStackTrace();
 			return 9999;//connection lost
+		}
+	}
+	
+	public ArrayList<Entity> entity;
+	
+	public ArrayList<Entity> getObjFromHost(){
+		
+		try {
+			ObjectInputStream reader = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+			//reader.
+			Object obj = reader.readObject();
+			entity = (ArrayList<Entity>) obj;
+			return entity;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			return entity;//nossa
 		}
 	}
 	

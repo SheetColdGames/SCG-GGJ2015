@@ -1,14 +1,17 @@
 package me.sheetcoldgames.ggj2015.engine;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 
 
@@ -77,6 +80,17 @@ public class Host {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void sendObjectToClient(ArrayList<Entity> obj){
+		try {
+			ObjectOutputStream writer = new ObjectOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
+			writer.writeObject(obj);
+			writer.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public int getFromClient(){// TODO:overload with serializable

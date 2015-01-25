@@ -1,5 +1,9 @@
 package me.sheetcoldgames.ggj2015.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
@@ -31,7 +35,11 @@ public class NetworkController extends GameController {
 	private String[] hostStatus = {hostAnim,"90f","12f",hostDirH,hostDirV}; // "cmd/playerPosX/playerPosY"
 	private String[] clientStatus = {clientAnim,"94f","12f",clientDirH,clientDirV}; // "cmd/playerPosX/playerPosY"
 	private Vector2 hostPos = new Vector2(90f,12f);
-	private Vector2 clientPos = new Vector2(94f,12f);
+	private Vector2 clientPos = new Vector2(31f,12f);
+	private String[] enemyStatus;
+	private ArrayList<String[]> enemyList = new ArrayList<String[]>();
+	private Entity robo;
+	
 	
 	Host host;
 	Client client;
@@ -41,7 +49,7 @@ public class NetworkController extends GameController {
 		super(input);
 		
 		girlControlScheme = Constants.INPUT_ARROWS;
-		robotControlScheme = Constants.INPUT_WASD;
+		robotControlScheme = Constants.INPUT_ARROWS;
 		
 		if(isHost){
 			host = new Host();
@@ -62,7 +70,7 @@ public class NetworkController extends GameController {
 		}
 	}
 	
-	
+	public String concat;
 	
 	
 	@Override
@@ -74,25 +82,72 @@ public class NetworkController extends GameController {
 		}
 		
 		reorganizeEntities(girlId, robotId);
-		
 		updateEntities();
 		
 		girlCamera.update();
-			
-		connectionSendUpdate();
-		connectionReceiveUpdate();
+		
+		connectionSendUpdateObj();
+		
+		connectionReceiveUpdateObj();
+		
+		
+		aEntity.get(currentRobotIndex).position.x = Float.valueOf(clientStatus[1]);
+		aEntity.get(currentRobotIndex).position.y = Float.valueOf(clientStatus[2]);
+		
+		
+		
+		
+		
 	}
 	
-	private void connectionSendUpdate(){
+	private void upRobo(){
+		
+		robo.action = checkAnim(clientStatus[0]);
+		robo.position = clientPos;
+		robo.horizontalDir = checkDir(clientStatus[3]);
+		robo.verticalDir = checkDir(clientStatus[4]);
+	}
+	
+	private void connectionSendUpdateObj(){
 		if(connected){
 			if(isHost){
-				host.sendToClient(hostStatus);
+				host.sendObjectToClient(aEntity);
 			} else{
 				client.sendToHost(clientStatus);
+				//client.sendObjectToHost(aEntity);
 			}
 		}
 	}
+	ArrayList<Entity> pre;
+	private void connectionReceiveUpdateObj(){
+		if (isHost){
+			clientStatus = host.getFromClientSTR();
+			clientAnim = clientStatus[0];
+			clientDirH = clientStatus[3];
+			clientDirV = clientStatus[4];
+			clientPos = new Vector2(Float.parseFloat(clientStatus[1]), Float.parseFloat(clientStatus[2]));
+		} else{
+			
+			aEntity = client.getObjFromHost();
+			
+			
+		
+			
+		}
+	}
 	
+	
+	private void connectionSendUpdate(){
+		if(connected){
+			if(!isHost){
+				//host.sendToClient(hostStatus);
+				client.sendToHost(clientStatus);
+			} else{
+				//client.sendToHost(clientStatus);
+			}
+		}
+	}
+	//String[][] hostHash;
 	private void connectionReceiveUpdate(){
 		if(connected){
 			if(isHost){
@@ -102,17 +157,12 @@ public class NetworkController extends GameController {
 				clientDirV = clientStatus[4];
 				clientPos = new Vector2(Float.parseFloat(clientStatus[1]), Float.parseFloat(clientStatus[2]));
 				
-				//clientPosY = Float.parseFloat(clientStatus[2]);
-			} else{
-				hostStatus = client.getFromHostSTR();
-				hostAnim = hostStatus[0];
-				hostDirH = hostStatus[3];
-				hostDirV = hostStatus[4];
-				hostPos = new Vector2(Float.parseFloat(hostStatus[1]),Float.parseFloat(hostStatus[2]));
-				//hostPosY = Float.parseFloat(hostStatus[2]);
-			}
+				
+			} 
 		}
 	}
+	
+	
 	
 	protected void updateEntityPosition(Entity ent) {
 		ent.stateTime += (Gdx.graphics.getDeltaTime() + ent.accel/120f);
@@ -217,9 +267,21 @@ public class NetworkController extends GameController {
 				}
 			}
 		}
+		if (ent.id != Constants.ROBOT_ID){  
 		ent.position.x += ent.velocity.x;
 		ent.position.y += ent.velocity.y;
-		if (ent.id == Constants.GIRL_ID && isHost){
+		} else if(!isHost && ent.id == Constants.ROBOT_ID){
+			ent.position.x += ent.velocity.x;
+			ent.position.y += ent.velocity.y;
+		}
+		String[] tes;
+		/*if(ent.id == Constants.ENEMY_AI_ID && !isHost){
+			tes = enemyList.get(index);
+			ent.position.x = Float.parseFloat(tes[1]);
+			ent.position.y = Float.parseFloat(tes[2]);
+		}*/
+		
+/*		if (ent.id == Constants.GIRL_ID && isHost){
 			hostStatus[0] = ent.action.toString();
 			hostStatus[1] = String.valueOf(ent.position.x);
 			hostStatus[2] = String.valueOf(ent.position.y);
@@ -233,14 +295,16 @@ public class NetworkController extends GameController {
 			ent.horizontalDir = checkDir(hostStatus[3]);
 			ent.verticalDir = checkDir(hostStatus[4]);
 			
-		}
-		if(ent.id == Constants.ROBOT_ID && !isHost){
+		}*/
+	if(ent.id == Constants.ROBOT_ID && !isHost){
+		
 			clientStatus[0] = ent.action.toString();
 			clientStatus[1] = String.valueOf(ent.position.x);
 			clientStatus[2] = String.valueOf(ent.position.y);
 			clientStatus[3] = ent.horizontalDir.toString();
 			clientStatus[4] = ent.verticalDir.toString();
-		} else if(ent.id == Constants.ROBOT_ID && isHost){
+			
+	} else if(ent.id == Constants.ROBOT_ID && isHost){
 			
 			ent.action = checkAnim(clientStatus[0]);
 			ent.position = clientPos;
