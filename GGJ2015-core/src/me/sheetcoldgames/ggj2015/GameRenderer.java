@@ -233,6 +233,10 @@ public class GameRenderer {
 		mapRenderer.setView(controller.girlCamera);
 		mapRenderer.render(controller.backgroundLayer);
 		
+		if (controller.aEntity.get(controller.currentGirlIndex).position.y < 34f) {
+			mapRenderer.render(controller.disposableLayer);
+		}
+		
 		if (debug) {
 			debugRender();
 		}
@@ -271,8 +275,9 @@ public class GameRenderer {
 //				-controller.aEntity.get(controller.currentRobotIndex).height/2f,
 //				controller.aEntity.get(controller.currentRobotIndex).width,
 //				controller.aEntity.get(controller.currentRobotIndex).height);
-		sb.end();
+		sb.end();		
 		mapRenderer.render(controller.foregroundLayer);
+		
 	}
 	
 	private TextureRegion currentGirlFrame(Entity ent) {

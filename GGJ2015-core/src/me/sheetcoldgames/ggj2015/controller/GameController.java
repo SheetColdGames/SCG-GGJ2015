@@ -14,6 +14,7 @@ import me.sheetcoldgames.ggj2015.engine.SheetCamera;
 import me.sheetcoldgames.ggj2015.engine.SheetPoint;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -43,14 +44,17 @@ public class GameController {
 	
 	public TiledMap map;
 	public int[] backgroundLayer;
+	public int[] disposableLayer;
 	public int[] foregroundLayer;
 	
 	public float yellowEnemyAttackDuration = .9f;
 	public float blueEnemyAttackDuration = .4f;
 	
 	// misc
-	public boolean debugRender = true;
+	public boolean debugRender = false;
 	boolean debugPressed = false;
+	
+	public Music mainTheme;
 	
 	public GameController(Input input) {
 		// initializing keyboard input
@@ -80,6 +84,14 @@ public class GameController {
 		
 		foregroundLayer = new int[1];
 		foregroundLayer[0] = 2;
+		
+		disposableLayer = new int[1];
+		disposableLayer[0] = 3;
+		
+		mainTheme = Gdx.audio.newMusic(Gdx.files.internal("main_theme.mp3"));
+		mainTheme.setLooping(true);
+		mainTheme.setVolume(1f);
+		mainTheme.pause();
 	}
 	
 	/**
@@ -139,8 +151,8 @@ public class GameController {
 		aEntity.get(0).width 	= Constants.GIRL_WIDTH;
 		aEntity.get(0).height 	= Constants.GIRL_HEIGHT;
 		aEntity.get(0).maxSpeed = Constants.GIRL_WALK_SPEED;
-		// aEntity.get(0).position.set(37f, 3f);
-		aEntity.get(0).position.set(15f, 20f);
+		aEntity.get(0).position.set(37f, 3f);
+		// aEntity.get(0).position.set(15f, 20f);
 		currentGirlIndex = 0;
 		
 		// This is the ROBOT
@@ -149,7 +161,7 @@ public class GameController {
 		aEntity.get(1).width 	= Constants.ROBOT_WIDTH;
 		aEntity.get(1).height 	= Constants.ROBOT_HEIGHT;
 		aEntity.get(1).maxSpeed = Constants.ROBOT_WALK_SPEED;
-		aEntity.get(1).position.set(31f, 12f);
+		aEntity.get(1).position.set(14f, 42f);
 		currentRobotIndex = 1;
 		
 		// Then, for a new set of enemies, we keep adding them in for loops
@@ -162,11 +174,11 @@ public class GameController {
 			aEntity.get(k).maxSpeed = Constants.BLUE_ENEMY_AI_WALK_SPEED + MathUtils.random() * .07f;
 		}
 		
-		aEntity.get(2).position.set(6f, 7f);
-		aEntity.get(2).patrolPoints.add(new Vector2(6f, 25f));
-		aEntity.get(2).patrolPoints.add(new Vector2(15f, 25f));
-		aEntity.get(2).patrolPoints.add(new Vector2(15f, 16f));
-		aEntity.get(2).patrolPoints.add(new Vector2(6f, 16f));
+		aEntity.get(2).position.set(18f, 25f);
+		aEntity.get(2).patrolPoints.add(new Vector2(18f, 25f));
+		aEntity.get(2).patrolPoints.add(new Vector2(30f, 25f));
+		aEntity.get(2).patrolPoints.add(new Vector2(30, 15f));
+		aEntity.get(2).patrolPoints.add(new Vector2(17f, 15f));
 		
 		total = aEntity.size()+1;
 		for (int k = aEntity.size(); k < total; k++) {
@@ -177,11 +189,11 @@ public class GameController {
 			aEntity.get(k).maxSpeed = Constants.YELLOW_ENEMY_AI_WALK_SPEED + MathUtils.random() * .07f;;
 		}
 		
-		aEntity.get(3).position.set(15f, 7f);
-		aEntity.get(3).patrolPoints.add(new Vector2(15f, 25f));
-		aEntity.get(3).patrolPoints.add(new Vector2(24f, 25f));
-		aEntity.get(3).patrolPoints.add(new Vector2(24f, 16f));
-		aEntity.get(3).patrolPoints.add(new Vector2(15f, 16f));
+		aEntity.get(3).position.set(4f, 25f);
+		aEntity.get(3).patrolPoints.add(new Vector2(4f, 25f));
+		aEntity.get(3).patrolPoints.add(new Vector2(17f, 25f));
+		aEntity.get(3).patrolPoints.add(new Vector2(17f, 15f));
+		aEntity.get(3).patrolPoints.add(new Vector2(4f, 15f));
 		/*
 		aEntity.get(3).position.set(19f, 6f);
 		aEntity.get(3).patrolPoints.add(new Vector2(16f, 15f));
@@ -192,11 +204,16 @@ public class GameController {
 	float dt; // deltaTime
 	
 	public void update() {
+		System.out.println(aEntity.get(currentGirlIndex).position);
 		dt = Gdx.graphics.getDeltaTime();
 		reorganizeEntities(girlId, robotId);
 		
 		updateEntities();
 		
+		updateCamera();
+	}
+	
+	private void updateCamera() {
 		girlCamera.update();
 	}
 	

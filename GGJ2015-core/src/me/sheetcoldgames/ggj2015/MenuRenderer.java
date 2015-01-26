@@ -2,26 +2,20 @@ package me.sheetcoldgames.ggj2015;
 
 
 
-import javax.swing.Renderer;
-
 import me.sheetcoldgames.ggj2015.controller.MenuController;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
 
 public class MenuRenderer {
 	
@@ -36,7 +30,7 @@ public class MenuRenderer {
 	
 	float state;
 	
-	
+	Music music;
 	
 	public MenuRenderer(MenuController controller) {
 		this.controller = controller;
@@ -53,7 +47,6 @@ public class MenuRenderer {
 		selecAnim = new Animation(1/6f,sel);
 		selecAnim.setPlayMode(PlayMode.NORMAL);
 	}
-	
 	
 	public void dispose() {
 		sr.dispose();		
@@ -114,7 +107,10 @@ public class MenuRenderer {
 		else if(MenuController.input.buttons[Input.ENTER]){
 			if (sel == 1){
 				MenuController.isFinished = true;
+				music.stop();
 				
+			} else {
+				dispose();
 			}
 		}
 	}
@@ -139,7 +135,7 @@ public class MenuRenderer {
 		font.setScale(1/2f);
 		sb.begin();
 		font.drawMultiLine(sb, str, 175, 125);
-		font.drawMultiLine(sb, "sair", 210, 75);
+		font.drawMultiLine(sb, "Exit", 210, 75);
 		sb.end();
 	}
 	/*

@@ -2,16 +2,10 @@ package me.sheetcoldgames.ggj2015.controller;
 
 import java.util.ArrayList;
 
-
-
-
-
-
-import javax.swing.Renderer;
-
 import me.sheetcoldgames.ggj2015.GameRenderer;
 import me.sheetcoldgames.ggj2015.Input;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 

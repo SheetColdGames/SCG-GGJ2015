@@ -28,7 +28,7 @@ public class GGJ2015 extends ApplicationAdapter {
 		
 		Gdx.input.setInputProcessor(input);
 		
-		//menuController.isFinished = false;
+		MenuController.isFinished = true;
 	}
 	
 	public void dispose() {
@@ -47,6 +47,9 @@ public class GGJ2015 extends ApplicationAdapter {
 			menuController.netController.update();
 			menuController.netRenderer.render(true);
 		}else if (MenuController.isFinished) {
+			if (!gameController.mainTheme.isPlaying()) {
+				gameController.mainTheme.play();
+			}
 			gameController.update();
 			gameRenderer.render(gameController.debugRender);
 		} else {
