@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import me.sheetcoldgames.ggj2015.GameRenderer;
 import me.sheetcoldgames.ggj2015.Input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class MenuController {
@@ -17,9 +19,10 @@ public class MenuController {
 	public boolean mp = false;
 	public boolean menuMp = false;
 	public OrthographicCamera camera;
+	Music music;
 	
 	
-	public static Input input;
+	public Input input;
 	
 	public ArrayList<Rectangle> buttons;
 	public ArrayList<Rectangle> buttonsMP;
@@ -31,29 +34,7 @@ public class MenuController {
 		
 		this.input = input;
 		
-		buttons = new ArrayList<Rectangle>();
-		for (int i = 0; i < 3; i++) {
-			buttons.add(
-					new Rectangle(
-							camera.viewportWidth/2f-64f,
-							camera.viewportHeight/2f+64f-i*64f, 
-							128f, 48f)
-					);
-		}
-		
-		buttonsMP = new ArrayList<Rectangle>();
-		for (int i = 0; i < 2; i++) {
-			buttonsMP.add(
-					new Rectangle(
-							camera.viewportWidth/2f-64f,
-							camera.viewportHeight/2f+64f-i*64f, 
-							128f, 48f)
-					);
-		}
-		
 	}
-	
-	
 	
 	public void initMP(boolean host){
 		NetworkController.isHost = host;
@@ -65,7 +46,7 @@ public class MenuController {
 	public void dispose() {
 		if(mp){
 			netController.dispose();
-			//netRenderer.dispose();
+			netRenderer.dispose();
 		}
 	}
 	
@@ -73,59 +54,28 @@ public class MenuController {
 		handleInput();
 	}
 	
-	boolean mouseReleased = false;
+	public float posSelH = 190f;
+	public float posSelV = 100f;
+	public int option = 1;
 	
 	private void handleInput() {
-		camera.unproject(input.currentRawPoint);
 		
-		if (input.mouseDown) {
-			mouseReleased = true;
+		if (input.buttons[Input.DOWN]){
+			posSelV = 50f;
+			option = 2;
 		}
-		
-		if (!input.mouseDown && input.mouseReleased && mouseReleased) {
-			mouseReleased = false;
-			
-			if(!menuMp){
-				for (int i = 0; i < buttons.size(); i++) {
-					if (buttons.get(i).contains(input.currentRawPoint.x, input.currentRawPoint.y)) {
-						if (i == 0){
-							isFinished = true;
-						}
-						
-						if (i == 1){
-							menuMp = true;
-							//initMP(true);
-							//mp = true;
-							//isFinished = true;
-						} else if(i == 2){
-							//initMP(false);
-							//mp = true;
-							//isFinished = true;
-						}
-						System.out.println("Index of button: " + i);
-					}
-				}
-			} else{
-				for (int i = 0; i < buttonsMP.size(); i++) {
-					if (buttonsMP.get(i).contains(input.currentRawPoint.x, input.currentRawPoint.y)) {
-						if (i == 0){
-							menuMp = true;
-							initMP(true);
-							mp = true;
-							isFinished = true;
-						}
-						
-						
-						
-						else if (i == 1){
-							initMP(false);
-							mp = true;
-							isFinished = true;
-						}
-						System.out.println("Index of button: " + i);
-					}
-				}
+		else if(input.buttons[Input.UP]){
+			posSelV = 100f;
+			option = 1;
+		}
+		else if(input.buttons[Input.ENTER]){
+			if (option == 1){
+				isFinished = true;
+				//music.stop();	
+			} else {
+				dispose();
 			}
 		}
+		
 	}
 }
