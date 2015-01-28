@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import me.sheetcoldgames.ggj2015.GameRenderer;
 import me.sheetcoldgames.ggj2015.Input;
+import me.sheetcoldgames.ggj2015.MenuRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -39,8 +40,8 @@ public class MenuController {
 	public void initMP(boolean host){
 		NetworkController.isHost = host;
 		netController = new NetworkController(input);
-		
 		netRenderer = new GameRenderer(netController);
+		mp = true;
 	}
 	
 	public void dispose() {
@@ -56,26 +57,79 @@ public class MenuController {
 	
 	public float posSelH = 190f;
 	public float posSelV = 100f;
-	public int option = 1;
+	private int option = 1;
 	
 	private void handleInput() {
 		
-		if (input.buttons[Input.DOWN]){
-			posSelV = 50f;
-			option = 2;
+		if (!menuMp){
+			menuInput();
+		} else{
+			mpInput();
 		}
-		else if(input.buttons[Input.UP]){
-			posSelV = 100f;
-			option = 1;
+		
+	}
+	
+	private void menuInput(){
+		if (option != 3){
+			if (input.buttons[Input.DOWN]){
+				input.releaseAllKeys();
+				MenuRenderer.state2 = 0;
+				posSelV = posSelV - 30f;//50f
+				option = option + 1;
+			}
+		} if(option != 1){
+			if(input.buttons[Input.UP]){
+				input.releaseAllKeys();
+				MenuRenderer.state2 = 0;
+				posSelV = posSelV + 30f;//100f
+				option = option - 1;
+			}
 		}
-		else if(input.buttons[Input.ENTER]){
+		if(input.buttons[Input.ENTER]){
+			input.releaseAllKeys();
 			if (option == 1){
 				isFinished = true;
 				//music.stop();	
+			} else if(option == 2){
+				menuMp = true;
 			} else {
 				dispose();
 			}
 		}
-		
+	}
+	
+	public float mpSelH = 190f;
+	public float mpSelV = 175f;
+	private int mpOption = 1;
+	
+	private void mpInput(){
+		if (mpOption != 2){
+			if (input.buttons[Input.DOWN]){
+				input.releaseAllKeys();
+				MenuRenderer.state2 = 0;
+				mpSelV = mpSelV - 30f;//50f
+				mpOption = mpOption + 1;
+			}
+		} if(mpOption != 1){
+			if(input.buttons[Input.UP]){
+				input.releaseAllKeys();
+				MenuRenderer.state2 = 0;
+				mpSelV = mpSelV + 30f;//100f
+				mpOption = mpOption - 1;
+			}
+		}
+		if(input.buttons[Input.ENTER]){
+			input.releaseAllKeys();
+			if (mpOption == 1){
+				initMP(true);
+				isFinished = true;
+				//music.stop();	
+			} else if(mpOption == 2){
+				initMP(false);
+				isFinished = true;
+			} else {
+				dispose();
+			}
+		}
 	}
 }

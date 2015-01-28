@@ -22,7 +22,7 @@ public class NetworkController extends GameController {
 	
 	public static boolean isHost = false; //if true the host will wait for a client
 	private boolean connected = false;
-	private String hostAddr = "192.168.43.39";
+	private String hostAddr = "192.168.1.2";
 	
 	//private int hostCmd = 99998;
 	//private int clientCmd = 99999;

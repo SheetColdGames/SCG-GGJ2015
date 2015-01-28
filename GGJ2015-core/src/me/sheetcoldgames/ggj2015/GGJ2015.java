@@ -28,7 +28,7 @@ public class GGJ2015 extends ApplicationAdapter {
 		
 		Gdx.input.setInputProcessor(input);
 		
-		MenuController.isFinished = true;
+		MenuController.isFinished = false;
 	}
 	
 	public void dispose() {

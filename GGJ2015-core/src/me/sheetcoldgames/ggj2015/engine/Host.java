@@ -38,7 +38,7 @@ public class Host {
 			return;
 		}
 		
-		//System.out.println("Server host address is: "+hostAddress);
+		System.out.println("Server host address is: "+hostAddress);
 		
 		try{
 			serverSocket = new ServerSocket(PORT,0,hostAddress);
@@ -62,7 +62,7 @@ public class Host {
 				return false;
 			}
 			
-			//System.out.println("Client "+clientSocket+" has connected.");
+			System.out.println("Client "+clientSocket+" has connected.");
 			return true;
 	}
 	

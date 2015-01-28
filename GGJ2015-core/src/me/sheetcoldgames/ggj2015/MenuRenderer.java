@@ -28,7 +28,7 @@ public class MenuRenderer {
 	BitmapFont font;
 	
 	float state;
-	float state2;
+	public static float state2;
 	
 	public MenuRenderer(MenuController controller) {
 		this.controller = controller;
@@ -50,7 +50,8 @@ public class MenuRenderer {
 		selecAnim.setPlayMode(PlayMode.NORMAL);
 		
 		font = new BitmapFont(Gdx.files.internal("minecraftia.fnt"), Gdx.files.internal("minecraftia_0.png"), false);
-		font.setScale(1/2.5f);
+		//font.setScale(1/2.4f);
+		font.setScale(1/2.5f, 1/2.7f);
 	}
 	
 	public void dispose() {
@@ -60,7 +61,11 @@ public class MenuRenderer {
 	public void render() {
 		clearScreen();
 		background();
-		Anim();
+		if(controller.menuMp){
+			textMp();
+		} else{
+			Anim();
+		}
 		
 	}
 	
@@ -85,11 +90,11 @@ public class MenuRenderer {
 	}
 	
 	TextureRegion atual;
-	private void select(){
+	private void select(float posH, float posV){
 		sb.begin();
-		state2 += (Gdx.graphics.getDeltaTime()*2.5);
+		state2 += (Gdx.graphics.getDeltaTime()*2.0);
 		atual = selecAnim.getKeyFrame(state2);
-		sb.draw(atual, controller.posSelH, controller.posSelV, 92,35);
+		sb.draw(atual, posH, posV, 92,35);
 		sb.end();
 		
 	}
@@ -99,15 +104,29 @@ public class MenuRenderer {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 	
+	String host = "Host";
+	String join = "Join";
+	String mp = "Multiplayer";
 	
-	String sp = "Single Player";
+	private void textMp(){
+		sb.begin();
+		font.drawMultiLine(sb, host, 215, 200);
+		font.drawMultiLine(sb, join, 215, 167);
+		font.drawMultiLine(sb, mp, 190, 280);//73
+		sb.end();
+		select(controller.mpSelH,controller.mpSelV);
+	}
+	
+	
+	String sp = "Single";
 	String exit = "Exit";
 	private void text(){		
 		sb.begin();
-		font.drawMultiLine(sb, sp, 185, 125);
-		font.drawMultiLine(sb, exit, 220, 73);
+		font.drawMultiLine(sb, sp, 213, 123);
+		font.drawMultiLine(sb, mp, 195, 93);
+		font.drawMultiLine(sb, exit, 220, 63);//73
 		sb.end();
-		select();
+		select(controller.posSelH, controller.posSelV);
 	}
 	
 }
