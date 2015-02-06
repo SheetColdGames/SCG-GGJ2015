@@ -1,6 +1,7 @@
 package me.sheetcoldgames.ggj2015;
 
 import me.sheetcoldgames.ggj2015.controller.GameController;
+import me.sheetcoldgames.ggj2015.controller.NetworkController;
 import me.sheetcoldgames.ggj2015.engine.ACTION;
 import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;
@@ -230,7 +231,19 @@ public class GameRenderer {
 	public void render(boolean debug) {
 		clearScreen();
 		
-		mapRenderer.setView(controller.girlCamera);
+		mapRenderer.setView(controller.camera);
+		sb.setProjectionMatrix(controller.camera.combined);
+		sr.setProjectionMatrix(controller.camera.combined);
+		
+//		if (controller.connected) {
+//			if (controller instanceof NetworkController) {
+//				if (!NetworkController.isHost) {
+//					mapRenderer.setView(((NetworkController)controller).robotCamera);
+//					sb.setProjectionMatrix(((NetworkController)controller).robotCamera.combined);
+//					sr.setProjectionMatrix(((NetworkController)controller).robotCamera.combined);
+//				}
+//			}
+//		}
 		mapRenderer.render(controller.backgroundLayer);
 		
 		if (controller.aEntity.get(controller.currentGirlIndex).position.y < 34f) {
@@ -241,7 +254,7 @@ public class GameRenderer {
 			debugRender();
 		}
 		
-		sb.setProjectionMatrix(controller.girlCamera.combined);
+		
 		sb.begin();
 		
 		for (Entity ent : controller.aEntity) {
@@ -414,9 +427,7 @@ public class GameRenderer {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 	
-	private void debugRender() {
-		sr.setProjectionMatrix(controller.girlCamera.combined);
-		
+	private void debugRender() {		
 		sr.begin(ShapeType.Filled);
 		renderEntities();
 		sr.end();

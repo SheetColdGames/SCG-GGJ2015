@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 public class GameController {
 	
 	Input input;
-	public SheetCamera girlCamera;
+	public SheetCamera camera;
 	
 	public ArrayList<Entity> aEntity;
 	
@@ -49,6 +49,8 @@ public class GameController {
 	
 	public float yellowEnemyAttackDuration = .9f;
 	public float blueEnemyAttackDuration = .4f;
+	
+	public boolean connected = false;
 	
 	// misc
 	public boolean debugRender = false;
@@ -100,13 +102,13 @@ public class GameController {
 	 * Protected method to be overwritten by the NetworkController if necessary
 	 */
 	protected void initCamera() {
-		girlCamera = new SheetCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
-		girlCamera.position.set(girlCamera.viewportWidth/2f, girlCamera.viewportHeight/2f, 0f);
-		girlCamera.update();
+		camera = new SheetCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
+		camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0f);
+		camera.update();
 		
 		// Defines the girl as the target of this camera
-		girlCamera.setTarget(aEntity.get(currentGirlIndex));
-		girlCamera.update();
+		camera.setTarget(aEntity.get(currentGirlIndex));
+		camera.update();
 	}
 	
 	public void dispose() {
@@ -214,7 +216,7 @@ public class GameController {
 	}
 	
 	private void updateCamera() {
-		girlCamera.update();
+		camera.update();
 	}
 	
 	protected void reorganizeEntities(int girlId, int robotId) {

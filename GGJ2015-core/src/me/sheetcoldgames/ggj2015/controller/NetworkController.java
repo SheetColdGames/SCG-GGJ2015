@@ -32,10 +32,10 @@ public class NetworkController extends GameController {
 	private String hostDirV = DIRECTION.DOWN.toString();
 	private String clientDirH = DIRECTION.DOWN.toString();
 	private String clientDirV = DIRECTION.DOWN.toString();
-	private String[] hostStatus = {hostAnim,"90f","12f",hostDirH,hostDirV}; // "cmd/playerPosX/playerPosY"
-	private String[] clientStatus = {clientAnim,"94f","12f",clientDirH,clientDirV}; // "cmd/playerPosX/playerPosY"
+	private String[] hostStatus = {hostAnim, "90f","12f",hostDirH,hostDirV}; // "cmd/playerPosX/playerPosY"
+	private String[] clientStatus = {clientAnim, String.valueOf(Constants.L0_GIRL_INIT_POS.x), String.valueOf(Constants.L0_GIRL_INIT_POS.y),clientDirH,clientDirV}; // "cmd/playerPosX/playerPosY"
 	private Vector2 hostPos = new Vector2(90f,12f);
-	private Vector2 clientPos = new Vector2(31f,12f);
+	private Vector2 clientPos = new Vector2(Constants.L0_GIRL_INIT_POS.x,Constants.L0_GIRL_INIT_POS.y);
 	private String[] enemyStatus;
 	private ArrayList<String[]> enemyList = new ArrayList<String[]>();
 	private Entity robo;
@@ -43,17 +43,15 @@ public class NetworkController extends GameController {
 	
 	Host host;
 	Client client;
-	SheetCamera robotCamera;
 	
 	public NetworkController(Input input) {
-		super(input);
-		
-		girlControlScheme = Constants.INPUT_ARROWS;
-		robotControlScheme = Constants.INPUT_ARROWS;
+		super(input);		
 		
 		if(isHost){
+			girlControlScheme = Constants.INPUT_ARROWS;
 			host = new Host();
 		} else{
+			robotControlScheme = Constants.INPUT_ARROWS;
 			client = new Client(hostAddr);
 			connected = client.isConnected();
 		}
@@ -63,15 +61,10 @@ public class NetworkController extends GameController {
 	protected void initCamera() {
 
 		super.initCamera();
-			
-		if(!isHost){
-			girlCamera.setTarget(aEntity.get(currentRobotIndex));
-			girlCamera.update();
-		}
+		
 	}
 	
 	public String concat;
-	
 	
 	@Override
 	public void update() {
@@ -84,7 +77,16 @@ public class NetworkController extends GameController {
 		reorganizeEntities(girlId, robotId);
 		updateEntities();
 		
-		girlCamera.update();
+		camera.setTarget(aEntity.get(currentGirlIndex));
+		// camera.position.set(2f, 2f, 0f);
+		camera.update();
+		if (!isHost) {
+			camera.setTarget(aEntity.get(currentRobotIndex));
+			camera.update();
+			
+		} else {
+			
+		}
 		
 		connectionSendUpdateObj();
 		

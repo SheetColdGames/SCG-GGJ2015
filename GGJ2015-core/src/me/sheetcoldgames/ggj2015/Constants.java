@@ -25,10 +25,16 @@ public class Constants {
 	public static final float GIRL_WIDTH = 1f;
 	public static final float GIRL_HEIGHT = 1.5f;
 	
+	// Level 0
+	public static final Vector2 L0_GIRL_INIT_POS = new Vector2(37f, 3f);
+	
 	public static final int ROBOT_ID = 2;
 	public static final float ROBOT_WALK_SPEED = .12f;
 	public static final float ROBOT_WIDTH = 2f;
 	public static final float ROBOT_HEIGHT = 2.5f;
+	
+	// Level 0
+	public static final Vector2 L0_ROBOT_INIT_POS = new Vector2(14f, 42f);
 	
 	// 
 	public static final int CHILDREN_AI_ID = 3;

@@ -13,6 +13,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import me.sheetcoldgames.ggj2015.Constants;
+
 
 
 
@@ -28,7 +30,11 @@ public class Host {
 	private String hostStatus;
 	private InetAddress hostAddress;
 	private PrintWriter printWriter;
-	private String[] clientHash = {"0","90f","12f","0","0"};
+	private String[] clientHash = {
+			"0", 
+			String.valueOf(Constants.L0_ROBOT_INIT_POS.x), 
+			String.valueOf(Constants.L0_ROBOT_INIT_POS.y),
+			"0","0"};
 	
 	public Host(){
 		try{
