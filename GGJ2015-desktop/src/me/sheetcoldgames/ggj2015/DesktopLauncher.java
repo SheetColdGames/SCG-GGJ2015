@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.height = Constants.WINDOW_HEIGHT;
 		config.resizable = false;
 		config.title = Constants.WINDOW_TITLE;
+		config.r = 0;
 		
 		new LwjglApplication(new GGJ2015(), config);
 	}

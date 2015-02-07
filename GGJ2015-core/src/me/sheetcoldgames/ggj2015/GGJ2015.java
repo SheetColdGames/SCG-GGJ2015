@@ -2,62 +2,63 @@ package me.sheetcoldgames.ggj2015;
 
 import me.sheetcoldgames.ggj2015.controller.GameController;
 import me.sheetcoldgames.ggj2015.controller.MenuController;
+import me.sheetcoldgames.ggj2015.controller.NetworkController;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
 
 public class GGJ2015 extends ApplicationAdapter {
 	Input input;
-	
+
 	MenuController menuController;
 	GameController gameController;
-	
+
 	MenuRenderer menuRenderer;
 	GameRenderer gameRenderer;
-	
+
 	public void create() {
 		input = new Input();
-		
-		gameController = new GameController(input);
+
 		menuController = new MenuController(input);
-		
-		gameRenderer = new GameRenderer(gameController);
+
 		menuRenderer = new MenuRenderer(menuController);
-		
+
 		Gdx.input.setInputProcessor(input);
-		
-		MenuController.isFinished = false;
+
+		menuController.isFinished = false;
 	}
-	
+
 	public void dispose() {
-		gameController.dispose();
+		if (gameController != null) {
+			gameController.dispose();
+		}
 		menuController.dispose();
-		
-		gameRenderer.dispose();
-		menuRenderer.dispose();
+
+		if (gameRenderer != null) {
+			gameRenderer.dispose();
+		}
 	}
-	
+
 	public void render() {
-		//Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1f);
+		// Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(),
+		// MathUtils.random(), 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		if (MenuController.isFinished && menuController.mp) {
-			if (!gameController.mainTheme.isPlaying()) {
-				gameController.mainTheme.play();
-			}
-			menuController.netController.update();
-			menuController.netRenderer.render(menuController.netController.debugRender);
-		} else if (MenuController.isFinished) {
-			if (!gameController.mainTheme.isPlaying()) {
-				gameController.mainTheme.play();
-			}
+
+		if (menuController.isFinished) {
 			gameController.update();
 			gameRenderer.render(gameController.debugRender);
 		} else {
 			menuController.update();
 			menuRenderer.render();
+			if (menuController.isFinished) {
+				System.out.println("Game Started!");
+				gameController = menuController.mp ? (new NetworkController(
+						input, menuController.isHost)) : (new GameController(
+						input));
+				gameRenderer = new GameRenderer(gameController);
+				menuController.dispose();
+			}
 		}
 	}
 }

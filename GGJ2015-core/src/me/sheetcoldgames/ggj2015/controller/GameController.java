@@ -93,7 +93,7 @@ public class GameController {
 		mainTheme = Gdx.audio.newMusic(Gdx.files.internal("main_theme.mp3"));
 		mainTheme.setLooping(true);
 		mainTheme.setVolume(1f);
-		mainTheme.pause();
+		mainTheme.play();
 	}
 	
 	/**

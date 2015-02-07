@@ -20,7 +20,7 @@ import me.sheetcoldgames.ggj2015.engine.SheetPoint;
 
 public class NetworkController extends GameController {
 
-	public static boolean isHost = false; // if true the host will wait for a
+	public boolean isHost; // if true the host will wait for a
 											
 	private boolean connected = false; // client
 	private String hostAddr = "192.168.1.5";
@@ -48,9 +48,10 @@ public class NetworkController extends GameController {
 	Host host;
 	Client client;
 
-	public NetworkController(Input input) {
+	public NetworkController(Input input, boolean isHost) {
 		super(input);
-
+		this.isHost = isHost;
+		
 		if (isHost) {
 			girlControlScheme = Constants.INPUT_ARROWS;
 			robotControlScheme = Constants.INPUT_NOTHING;
