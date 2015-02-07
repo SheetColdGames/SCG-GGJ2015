@@ -43,7 +43,7 @@ public class NetworkController extends GameController {
 			Constants.L0_GIRL_INIT_POS.y);
 	private String[] enemyStatus;
 	private ArrayList<String[]> enemyList = new ArrayList<String[]>();
-	private Entity robo;
+	private Entity robot;
 
 	Host host;
 	Client client;
@@ -51,11 +51,12 @@ public class NetworkController extends GameController {
 	public NetworkController(Input input, boolean isHost) {
 		super(input);
 		this.isHost = isHost;
-		
+		robot = aEntity.get(currentRobotIndex);
 		if (isHost) {
 			girlControlScheme = Constants.INPUT_ARROWS;
 			robotControlScheme = Constants.INPUT_NOTHING;
 			host = new Host();
+			
 		} else {
 			robotControlScheme = Constants.INPUT_ARROWS;
 			girlControlScheme = Constants.INPUT_NOTHING;
@@ -76,11 +77,11 @@ public class NetworkController extends GameController {
 		dt = Gdx.graphics.getDeltaTime();
 		if (isHost && !connected) {
 			connected = host.clientConnected();
+			connectionSendUpdateObj();
 		}
 
-		reorganizeEntities(girlId, robotId);
-		updateEntities();
-
+		
+		
 		camera.setTarget(aEntity.get(currentGirlIndex));
 		camera.update();
 
@@ -89,14 +90,21 @@ public class NetworkController extends GameController {
 			camera.update();
 
 		}
-
-		connectionSendUpdateObj();
+		
+		
 		connectionReceiveUpdateObj();
-
-		aEntity.get(currentRobotIndex).position.x = Float
-				.valueOf(clientStatus[1]);
-		aEntity.get(currentRobotIndex).position.y = Float
-				.valueOf(clientStatus[2]);
+//		if (!isHost){
+//			aEntity.get(currentRobotIndex).position.x = Float
+//					.valueOf(clientStatus[1]);
+//			aEntity.get(currentRobotIndex).position.y = Float
+//					.valueOf(clientStatus[2]);
+//		}
+		reorganizeEntities(girlId, robotId);
+		if (!isHost) {
+			aEntity.set(currentRobotIndex, robot);
+		}
+		updateEntities();
+		connectionSendUpdateObj();
 	}
 
 	private void connectionSendUpdateObj() {
@@ -104,8 +112,9 @@ public class NetworkController extends GameController {
 			if (isHost) {
 				host.sendObjectToClient(aEntity);
 			} else {
-				client.sendToHost(clientStatus);
+				//client.sendToHost(clientStatus);
 				// client.sendObjectToHost(aEntity);
+				client.sendObjectToHost(robot);
 			}
 		}
 	}
@@ -114,23 +123,55 @@ public class NetworkController extends GameController {
 
 	private void connectionReceiveUpdateObj() {
 		if (isHost) {
-			clientStatus = host.getFromClientSTR();
-			clientAnim = clientStatus[0];
-			clientDirH = clientStatus[3];
-			clientDirV = clientStatus[4];
-			clientPos = new Vector2(Float.parseFloat(clientStatus[1]),
-					Float.parseFloat(clientStatus[2]));
+//			clientStatus = host.getFromClientSTR();
+//			clientAnim = clientStatus[0];
+//			clientDirH = clientStatus[3];
+//			clientDirV = clientStatus[4];
+//			clientPos = new Vector2(Float.parseFloat(clientStatus[1]),
+//					Float.parseFloat(clientStatus[2]));
+			aEntity.set(currentRobotIndex, host.getObjFromClient()); 
+			
 		} else {
 			aEntity = client.getObjFromHost();
+			//aEntity.set(currentRobotIndex, robot);
+			
+		}
+	}
+	
+	protected void updateEntities() {
+		if (isHost) {
+			for (Entity ent : aEntity) {
+				if (ent.id == Constants.ROBOT_ID) {
+					//ent = robot;
+//					ent.action = checkAnim(clientAnim);
+//					ent.position = clientPos;
+//					ent.horizontalDir = checkDir(clientDirH);
+//					ent.verticalDir = checkDir(clientDirV);
+				} 
+				if (ent.id == Constants.GIRL_ID) {
+					handleInput(ent, girlControlScheme, currentGirlIndex);
+					updateEntityPosition(ent);
+				} else {
+					aiController.updateEnemy(ent, groupPoints, aEntity.get(currentGirlIndex), aEntity.get(currentRobotIndex));
+					updateEntityPosition(ent);
+				}
+				// after we make sure that every entity has used the correct method,
+				// we update it
+				
+			}
+		} else {
+			handleInput(aEntity.get(currentRobotIndex),robotControlScheme, currentRobotIndex);
+			updateEntityPosition(aEntity.get(currentRobotIndex));
 		}
 	}
 
 	protected void updateEntityPosition(Entity ent) {
 		super.updateEntityPosition(ent);
-		if (!isHost && ent.id == Constants.ROBOT_ID) {
-			ent.position.x += ent.velocity.x;
-			ent.position.y += ent.velocity.y;
-		}
+		
+//		if (!isHost && ent.id == Constants.ROBOT_ID) {
+//			ent.position.x += ent.velocity.x;
+//			ent.position.y += ent.velocity.y;
+//		}
 		String[] tes;
 		/*
 		 * if(ent.id == Constants.ENEMY_AI_ID && !isHost){ tes =
@@ -155,20 +196,20 @@ public class NetworkController extends GameController {
 		 * }
 		 */
 		if (ent.id == Constants.ROBOT_ID && !isHost) {
-
-			clientStatus[0] = ent.action.toString();
-			clientStatus[1] = String.valueOf(ent.position.x);
-			clientStatus[2] = String.valueOf(ent.position.y);
-			clientStatus[3] = ent.horizontalDir.toString();
-			clientStatus[4] = ent.verticalDir.toString();
-
-		} else if (ent.id == Constants.ROBOT_ID && isHost) {
-
-			ent.action = checkAnim(clientStatus[0]);
-			ent.position = clientPos;
-			ent.horizontalDir = checkDir(clientStatus[3]);
-			ent.verticalDir = checkDir(clientStatus[4]);
+			robot = ent;
+//			clientStatus[0] = ent.action.toString();
+//			clientStatus[1] = String.valueOf(ent.position.x);
+//			clientStatus[2] = String.valueOf(ent.position.y);
+//			clientStatus[3] = ent.horizontalDir.toString();
+//			clientStatus[4] = ent.verticalDir.toString();
 		}
+//		} else if (ent.id == Constants.ROBOT_ID && isHost) {
+//
+//			ent.action = checkAnim(clientStatus[0]);
+//			ent.position = clientPos;
+//			ent.horizontalDir = checkDir(clientStatus[3]);
+//			ent.verticalDir = checkDir(clientStatus[4]);
+//		}
 	}
 
 	private ACTION checkAnim(String status) {

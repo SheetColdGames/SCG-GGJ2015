@@ -1,6 +1,7 @@
 package me.sheetcoldgames.ggj2015.engine;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,6 +76,19 @@ public class Client {
 		}
 
 	}
+	
+	public void sendObjectToHost(Entity obj){
+		
+		try {
+			ObjectOutputStream writer = new ObjectOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
+			writer.writeObject(obj);
+			writer.flush();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public void sendObjectToHost(ArrayList<Entity> obj) {
 		try {
@@ -104,7 +118,7 @@ public class Client {
 	public ArrayList<Entity> entity;
 
 	public ArrayList<Entity> getObjFromHost() {
-
+		System.out.println("enviado");
 		try {
 			ObjectInputStream reader = new ObjectInputStream(
 					new BufferedInputStream(clientSocket.getInputStream()));

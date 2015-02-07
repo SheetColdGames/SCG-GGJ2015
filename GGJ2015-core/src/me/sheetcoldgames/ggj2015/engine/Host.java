@@ -1,10 +1,12 @@
 package me.sheetcoldgames.ggj2015.engine;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -117,7 +119,7 @@ public class Host {
 			bufferedReader = new BufferedReader(new InputStreamReader(is));
 			if (bufferedReader.ready()) {
 				clientStatus = bufferedReader.readLine();
-				System.out.println("received: " + clientStatus);
+				//System.out.println("received: " + clientStatus);
 				clientHash = clientStatus.split("/");
 			}
 
@@ -127,6 +129,24 @@ public class Host {
 			System.out.println(e);
 			return clientHash;// connection lost
 		}
+	}
+	Entity robot;
+	public Entity getObjFromClient(){
+		
+		try {
+			System.out.println("teste");
+			ObjectInputStream reader = new ObjectInputStream( new BufferedInputStream(clientSocket.getInputStream()));
+			Object obj = reader.readObject();
+			robot = (Entity) obj;
+			
+			return robot;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			return robot;
+		}
+		
 	}
 
 }

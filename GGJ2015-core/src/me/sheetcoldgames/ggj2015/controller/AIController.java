@@ -66,7 +66,7 @@ GameController controller;
 				if (enemyRadius.contains(girl.position.x, girl.position.y) || 
 						enemyRadius.contains(robot.position.x, robot.position.y)) {
 					if (seeEntity(enemy.position.x, enemy.position.y, girl.position.x, girl.position.y)) {
-						System.out.println("I'm supposed to attack the girl now");
+						//System.out.println("I'm supposed to attack the girl now");
 						if (enemy.id == Constants.YELLOW_ENEMY_AI_ID) {
 							enemy.velocity.set(0f, 0f);
 							enemy.action = ACTION.ATTACK;
@@ -82,7 +82,7 @@ GameController controller;
 							}
 						}
 					} else if (seeEntity(enemy.position.x, enemy.position.y, robot.position.x, robot.position.y)) {
-						System.out.println("I'm supposed to attack the robot now");
+						//System.out.println("I'm supposed to attack the robot now");
 					} 
 				} else {
 					followPatrolPoints(enemy);
@@ -109,7 +109,7 @@ GameController controller;
 				}
 			}
 		} else {
-			System.out.println("out of bounds");
+			//System.out.println("out of bounds");
 		}
 	}
 	

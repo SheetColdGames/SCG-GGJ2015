@@ -206,7 +206,7 @@ public class GameController {
 	float dt; // deltaTime
 	
 	public void update() {
-		System.out.println(aEntity.get(currentGirlIndex).position);
+		//System.out.println(aEntity.get(currentGirlIndex).position);
 		dt = Gdx.graphics.getDeltaTime();
 		reorganizeEntities(girlId, robotId);
 		
@@ -239,6 +239,9 @@ public class GameController {
 				currentRobotIndex = k;
 			}
 		}
+		System.out.println("Robot: "+aEntity.get(currentRobotIndex).velocity);
+		System.out.println("Girl: "+aEntity.get(currentGirlIndex).velocity);
+		System.out.println();
 	}
 	
 	protected void updateEntities() {
