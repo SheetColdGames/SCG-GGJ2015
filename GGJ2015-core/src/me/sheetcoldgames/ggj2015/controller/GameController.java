@@ -280,7 +280,7 @@ public class GameController {
 			} else {
 				resetYVelocity(ent);
 			}
-		} else {
+		} else if (controlScheme == Constants.INPUT_WASD) {
 			// horizontal motion
 			if (input.buttons[Input.CAM_RIGHT] ^ input.buttons[Input.CAM_LEFT]) {
 				if (input.buttons[Input.CAM_RIGHT]) {

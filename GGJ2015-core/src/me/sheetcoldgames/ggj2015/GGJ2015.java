@@ -44,9 +44,12 @@ public class GGJ2015 extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if (MenuController.isFinished && menuController.mp) {
+			if (!gameController.mainTheme.isPlaying()) {
+				gameController.mainTheme.play();
+			}
 			menuController.netController.update();
-			menuController.netRenderer.render(true);
-		}else if (MenuController.isFinished) {
+			menuController.netRenderer.render(menuController.netController.debugRender);
+		} else if (MenuController.isFinished) {
 			if (!gameController.mainTheme.isPlaying()) {
 				gameController.mainTheme.play();
 			}

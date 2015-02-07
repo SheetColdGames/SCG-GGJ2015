@@ -29,11 +29,15 @@ public class MenuController {
 	public ArrayList<Rectangle> buttonsMP;
 	
 	public MenuController(Input input) {
-		camera = new OrthographicCamera(480f, 320f);
+		camera = new OrthographicCamera(640f, 480f);
 		camera.position.set(camera.viewportWidth/2f, camera.viewportHeight/2f, 0f);
 		camera.update();
 		
 		this.input = input;
+		
+		mpSelH = camera.viewportWidth/2f;
+		mpSelV = 175f;
+		mpOption = 1;
 		
 	}
 	

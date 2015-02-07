@@ -13,6 +13,7 @@ public class Constants {
 	public static final float VIEWPORT_WIDTH = WINDOW_WIDTH / (TILE_SIZE * SCALE);
 	public static final float VIEWPORT_HEIGHT= WINDOW_HEIGHT / (TILE_SIZE * SCALE);
 	
+	public static final int INPUT_NOTHING = -1;
 	public static final int INPUT_ARROWS = 1;
 	public static final int INPUT_WASD = 2;
 	

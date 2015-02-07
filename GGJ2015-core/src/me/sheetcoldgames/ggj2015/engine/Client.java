@@ -17,62 +17,69 @@ import me.sheetcoldgames.ggj2015.Constants;
 //import me.sheetcoldgames.topdownengine.TopDownEngineShowcase;
 
 public class Client {
-	
+
 	private static final int PORT = 30480;
 	private Socket clientSocket;
 	private PrintWriter printWriter;
 	private boolean connected = false;
-	private BufferedReader bufferedReader; 
+	private BufferedReader bufferedReader;
 	private int hostCmd;
 	public String clientStatus;
 	private String hostStatus;
-	private String[] hostHash = {"0","31f", "12f","0","0"}; // trocar por variavel de local inicial
-	
-	public Client(String addr){
-		
-		try{
+	private String[] hostHash = { "0", "31f", "12f", "0", "0" }; // trocar por
+																	// variavel
+																	// de local
+																	// inicial
+
+	public Client(String addr) {
+
+		try {
 			clientSocket = new Socket(addr, PORT);
 			this.connected = true;
-		} catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e);
 			return;
 		}
-		
-		System.out.println("Client connected to "+addr+":"+PORT);
+
+		System.out.println("Client connected to " + addr + ":" + PORT);
 	}
-	
-	public boolean isConnected(){
-		if (this.connected){
+
+	public boolean isConnected() {
+		if (this.connected) {
 			return true;
-		}
-		else{
+		} else {
 			return false;
 		}
 	}
-	
-	public void sendToHost(String[] clientHash){ // TODO:overload with serializable // string with " cmd, playerPosX, playerPosY"
+
+	public void sendToHost(String[] clientHash) { // TODO:overload with
+													// serializable // string
+													// with
+													// " cmd, playerPosX, playerPosY"
 		try {
-			//send client cmd
+			// send client cmd
 			clientStatus = String.join("/", clientHash);
-			//clientStatus = clientStatus+"\n";
-			printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
+			// clientStatus = clientStatus+"\n";
+			printWriter = new PrintWriter(clientSocket.getOutputStream(), true);
 			printWriter.println(clientStatus);
-			//System.out.println("sent: "+clientStatus);
+			// System.out.println("sent: "+clientStatus);
 			printWriter = null;
-			
-			/*//send client player position
-			printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
-			printWriter.println(cmd);
-			System.out.println("sent: "+cmd);*/
+
+			/*
+			 * //send client player position printWriter = new
+			 * PrintWriter(clientSocket.getOutputStream(),true);
+			 * printWriter.println(cmd); System.out.println("sent: "+cmd);
+			 */
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void sendObjectToHost(ArrayList<Entity> obj){
+
+	public void sendObjectToHost(ArrayList<Entity> obj) {
 		try {
-			ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
+			ObjectOutputStream writer = new ObjectOutputStream(
+					clientSocket.getOutputStream());
 			writer.writeObject(obj);
 			writer.flush();
 		} catch (IOException e) {
@@ -80,56 +87,56 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
-	public int getFromHost(){ // TODO:overload with serializable
+
+	public int getFromHost() { // TODO:overload with serializable
 		try {
-			bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			bufferedReader = new BufferedReader(new InputStreamReader(
+					clientSocket.getInputStream()));
 			hostCmd = bufferedReader.read();
 			return hostCmd;
 		} catch (IOException e) {
 			System.out.println("host -> client error");
 			e.printStackTrace();
-			return 9999;//connection lost
+			return 9999;// connection lost
 		}
 	}
-	
+
 	public ArrayList<Entity> entity;
-	
-	public ArrayList<Entity> getObjFromHost(){
-		
+
+	public ArrayList<Entity> getObjFromHost() {
+
 		try {
-			ObjectInputStream reader = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-			//reader.
+			ObjectInputStream reader = new ObjectInputStream(
+					new BufferedInputStream(clientSocket.getInputStream()));
+			// reader.
 			Object obj = reader.readObject();
 			entity = (ArrayList<Entity>) obj;
 			return entity;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			return entity;//nossa
+			// e.printStackTrace();
+			return entity;// nossa
 		}
 	}
-	
+
 	InputStream is;
-	
-	public String[] getFromHostSTR(){// TODO:overload with serializable
+
+	public String[] getFromHostSTR() {// TODO:overload with serializable
 		try {
 			is = clientSocket.getInputStream();
 			bufferedReader = new BufferedReader(new InputStreamReader(is));
-			if(bufferedReader.ready()){
+			if (bufferedReader.ready()) {
 				hostStatus = bufferedReader.readLine();
-				//System.out.println("received: "+hostStatus);
+				// System.out.println("received: "+hostStatus);
 				hostHash = hostStatus.split("/");
 			}
-			
-				
+
 			return hostHash;
-			
+
 		} catch (IOException e) {
 			System.out.println(e);
 			return hostHash;// connection lost
 		}
 	}
-	
-	
+
 }
