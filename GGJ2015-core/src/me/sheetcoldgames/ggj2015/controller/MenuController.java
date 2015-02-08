@@ -49,8 +49,10 @@ public class MenuController {
 
 		menuTheme = Gdx.audio.newMusic(Gdx.files.internal("menu_theme.mp3"));
 		menuTheme.setLooping(true);
-		menuTheme.setVolume(1f);
+		menuTheme.setVolume(0f);
 		menuTheme.play();
+		
+		strIp = new StringBuffer();
 	}
 
 	public void dispose() {
@@ -79,7 +81,6 @@ public class MenuController {
 		} else {
 			mpInput();
 		}
-
 	}
 
 	private void menuInput() {
@@ -115,9 +116,13 @@ public class MenuController {
 	public float mpSelH = 190f;
 	public float mpSelV = 175f;
 	private int mpOption = 1;
-
+	
+	public StringBuffer strIp;
+	
+	public int IP_LENGTH = 15;
+	public int IP_BLOCK_LENGTH = 3;
+	
 	private void mpInput() {
-
 		if (mpOption != 3) {
 			if (input.buttons[Input.DOWN]) {
 				input.releaseAllKeys();
@@ -151,8 +156,23 @@ public class MenuController {
 				dispose();
 			}
 		}
+		
+		if (input.hasTyped) {
+			if (input.lastCharTyped == '\b') {
+				if (strIp.length() > 0) {
+					strIp.deleteCharAt(strIp.length()-1);
+				}
+			} else {
+				if (strIp.length() < IP_LENGTH) {
+					strIp.append(input.lastCharTyped);
+				}
+			}
+			
+			System.out.println("The string length: " + strIp.length() + " and content: " + strIp);
+			input.hasTyped = false;
+		}
 	}
-
+	
 	private void finish() {
 		isFinished = true;
 		menuTheme.stop();

@@ -218,8 +218,19 @@ public class Input implements InputProcessor {
 		return true;
 	}
 
+	public char[] chars = {'0', '1', '2', '3', '4', '5',	'6', '7', '8', '9', '.', '\b'};
+	public char lastCharTyped = '\0';
+	public boolean hasTyped = false;
+	
 	@Override
 	public boolean keyTyped(char character) {
+		for (int k = 0; k < chars.length; k++) {
+			if (character == chars[k]) {
+				hasTyped = true;
+				lastCharTyped = character;
+				return true;
+			}
+		}
 		return false;
 	}
 

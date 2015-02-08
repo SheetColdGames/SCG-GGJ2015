@@ -118,6 +118,10 @@ public class MenuRenderer {
 		font.drawMultiLine(sb, backText, controller.camera.viewportWidth / 2f
 				- join.length() * 6, 138);
 		select(controller.camera.viewportWidth / 2f, controller.mpSelV);
+		
+		// current ip typed
+		font.drawMultiLine(sb, controller.strIp, controller.camera.viewportWidth / 2f
+				- controller.strIp.length() * 6, 320);
 	}
 
 	String sp = "Single";
