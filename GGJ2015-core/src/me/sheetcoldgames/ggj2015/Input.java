@@ -33,7 +33,8 @@ public class Input implements InputProcessor {
 	public static final int SAVE_POINTS = 16;
 	
 	// ======= miscelaneous =======
-	public static final int DEBUG_RENDER = 29;
+	public static final int DEBUG_RENDER = 28;
+	public static final int ESCAPE = 29;
 	public static final int CTRL = 30;
 	public static final int SHIFT = 31;
 	
@@ -66,6 +67,7 @@ public class Input implements InputProcessor {
 	
 	// ======= Miscelaneous/helper keys =======
 	int KEY_DEBUG_RENDER;
+	int KEY_ESCAPE;
 	int KEY_CTRL;
 	int KEY_SHIFT;
 	
@@ -122,6 +124,7 @@ public class Input implements InputProcessor {
 		
 		KEY_DEBUG_RENDER = Keys.HOME;
 		
+		KEY_ESCAPE = Keys.ESCAPE;
 		KEY_CTRL = Keys.CONTROL_LEFT;
 		KEY_SHIFT = Keys.SHIFT_LEFT;
 	}
@@ -164,6 +167,8 @@ public class Input implements InputProcessor {
 			buttons[SAVE_POINTS] = true;
 		} else if (keycode == KEY_DEBUG_RENDER) {
 			buttons[DEBUG_RENDER] = true;
+		} else if (keycode == KEY_ESCAPE)  {
+			buttons[ESCAPE] = true;
 		} else if (keycode == KEY_CTRL) {
 			buttons[CTRL] = true;
 		} else if (keycode == KEY_SHIFT) {
@@ -210,6 +215,8 @@ public class Input implements InputProcessor {
 			buttons[SAVE_POINTS] = false;
 		} else if (keycode == KEY_DEBUG_RENDER) {
 			buttons[DEBUG_RENDER] = false; 
+		} else if (keycode == KEY_ESCAPE)  {
+			buttons[ESCAPE] = false;
 		} else if (keycode == KEY_CTRL) {
 			buttons[CTRL] = false;
 		} else if (keycode == KEY_SHIFT) {

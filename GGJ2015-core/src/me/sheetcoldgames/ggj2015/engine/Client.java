@@ -9,11 +9,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-
-import me.sheetcoldgames.ggj2015.Constants;
 
 //import me.sheetcoldgames.topdownengine.TopDownEngineShowcase;
 
@@ -37,12 +34,11 @@ public class Client {
 		try {
 			clientSocket = new Socket(addr, PORT);
 			this.connected = true;
+			System.out.println("Client connected to " + addr + ":" + PORT);
 		} catch (Exception e) {
 			System.out.println(e);
-			return;
+			this.connected = false;
 		}
-
-		System.out.println("Client connected to " + addr + ":" + PORT);
 	}
 
 	public boolean isConnected() {

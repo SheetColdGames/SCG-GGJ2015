@@ -18,6 +18,7 @@ public class Constants {
 	public static final int INPUT_WASD = 2;
 	
 	public static final String PHYSICAL_MAP = "level1.fis";
+	public static final String CONFIG_FILE = "config.scfg";
 	
 	// ======= ALL RELATED TO ENTITIES =======
 	

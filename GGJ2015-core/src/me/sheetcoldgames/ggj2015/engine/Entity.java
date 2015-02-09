@@ -1,13 +1,15 @@
 package me.sheetcoldgames.ggj2015.engine;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.math.Vector2;
 
 public class Entity implements Serializable{
-public int id;
+	
+	private static final long serialVersionUID = -3032914695134938754L;
+
+	public int id;
 	
 	public Vector2 position;
 	public Vector2 velocity;

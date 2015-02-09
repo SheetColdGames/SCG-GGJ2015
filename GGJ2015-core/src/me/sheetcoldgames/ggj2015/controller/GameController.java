@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameController {
 	
+	AudioController audioController;
 	Input input;
 	public SheetCamera camera;
 	
@@ -90,10 +91,10 @@ public class GameController {
 		disposableLayer = new int[1];
 		disposableLayer[0] = 3;
 		
-		mainTheme = Gdx.audio.newMusic(Gdx.files.internal("main_theme.mp3"));
-		mainTheme.setLooping(true);
-		mainTheme.setVolume(0f);
-		mainTheme.play();
+		audioController = new AudioController();
+		audioController.loadTheme(AudioController.MAIN_THEME);
+		audioController.loopTheme(true);
+		audioController.playTheme();
 	}
 	
 	/**
@@ -112,7 +113,7 @@ public class GameController {
 	}
 	
 	public void dispose() {
-		
+		audioController.dispose();
 	}
 	
 	protected void initTestMap(String filename) {

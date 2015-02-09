@@ -1,12 +1,6 @@
 package me.sheetcoldgames.ggj2015.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Vector2;
 
 import me.sheetcoldgames.ggj2015.Constants;
 import me.sheetcoldgames.ggj2015.Input;
@@ -15,15 +9,16 @@ import me.sheetcoldgames.ggj2015.engine.Client;
 import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;
 import me.sheetcoldgames.ggj2015.engine.Host;
-import me.sheetcoldgames.ggj2015.engine.SheetCamera;
-import me.sheetcoldgames.ggj2015.engine.SheetPoint;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 
 public class NetworkController extends GameController {
 
-	public boolean isHost; // if true the host will wait for a
+	public boolean isHost = false; // if true the host will wait for a
 											
 	private boolean connected = false; // client
-	private String hostAddr = "192.168.0.15";
+	//private String hostAddr = "192.168.0.15";
 
 	// private int hostCmd = 99998;
 	// private int clientCmd = 99999;
@@ -48,23 +43,35 @@ public class NetworkController extends GameController {
 	Host host;
 	Client client;
 
-	public NetworkController(Input input, boolean isHost) {
+//	public NetworkController(Input input, online) {
+//		super(input);
+//		this.isHost = true;
+//		
+//	}
+	
+	public NetworkController(Input input, String hostAddr, boolean isHost) {
 		super(input);
 		this.isHost = isHost;
-		robot = aEntity.get(currentRobotIndex);
-		if (isHost) {
+		//this.hostAddr = strIP;
+		
+		if (isHost){
+			robot = aEntity.get(currentRobotIndex);
 			girlControlScheme = Constants.INPUT_ARROWS;
 			robotControlScheme = Constants.INPUT_NOTHING;
-			host = new Host();
-			
-		} else {
+			host = new Host(hostAddr);
+		} else{
+			robot = aEntity.get(currentRobotIndex);
 			robotControlScheme = Constants.INPUT_ARROWS;
 			girlControlScheme = Constants.INPUT_NOTHING;
 			client = new Client(hostAddr);
 			connected = client.isConnected();
-			
 			connectionSendUpdateObj();
 		}
+		
+	}
+	
+	public boolean isConnected(){
+		return connected;
 	}
 
 	@Override

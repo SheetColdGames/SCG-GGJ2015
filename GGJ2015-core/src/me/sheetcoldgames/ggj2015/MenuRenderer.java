@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 
 public class MenuRenderer {
 
@@ -48,28 +49,46 @@ public class MenuRenderer {
 	}
 
 	public void dispose() {
+		sb.dispose();
 	}
 
+	public void setController(MenuController controller) {
+		this.controller = controller;
+	}
+	
 	public void render() {
 		sb.setProjectionMatrix(controller.camera.combined);
 		sb.begin();
 		clearScreen();
 		background();
-		if (controller.mp) {
-			textMp();
+		if (controller.lan) {
+			lanMenu();
+		} else if (controller.online) {
+			onlineMenu();
+		} else if (logoAnim.isAnimationFinished(controller.logoStateTime)) {
+			mainMenu();
+			renderMessage();
 		} else {
-			Anim();
+			introMenuAnimation();
 		}
+		
 		sb.end();
 	}
 
 	public void background() {
 		sb.draw(background, 0f, 0f, 640f, 480f);
 	}
+	
+	private void renderMessage() {
+		if (MathUtils.sin(controller.logoStateTime * 6) > 0f) {
+			font.drawMultiLine(sb, controller.currentMessage,
+				controller.camera.viewportWidth/2f - controller.currentMessage.length() * MenuController.VI, 420);
+		}
+	}
 
 	TextureRegion currentFrame;
 
-	public void Anim() {
+	public void introMenuAnimation() {
 		currentFrame = logoAnim.getKeyFrame(controller.logoStateTime);
 
 		sb.draw(currentFrame,
@@ -78,9 +97,6 @@ public class MenuRenderer {
 				controller.camera.viewportHeight / 2f
 						+ currentFrame.getRegionHeight() / 2f,
 				currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
-		if (logoAnim.isAnimationFinished(controller.logoStateTime)) {
-			text();
-		}
 	}
 
 	TextureRegion atual;
@@ -102,39 +118,58 @@ public class MenuRenderer {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
-
-	String host = "Host";
-	String join = "Join";
-	String backText = "Back";
-	String mp = "Multiplayer";
-
-	private void textMp() {
-		font.drawMultiLine(sb, mp,
-				controller.camera.viewportWidth / 2f - mp.length() * 6, 420);// 73
-		font.drawMultiLine(sb, host, controller.camera.viewportWidth / 2f
-				- host.length() * 6, 198);
-		font.drawMultiLine(sb, join, controller.camera.viewportWidth / 2f
-				- join.length() * 6, 168);
-		font.drawMultiLine(sb, backText, controller.camera.viewportWidth / 2f
-				- join.length() * 6, 138);
-		select(controller.camera.viewportWidth / 2f, controller.mpSelV);
+	
+	private void drawMenuOptions(String[] options, float initialY) {
+		for (int k = 0; k < options.length; k++) {
+			font.drawMultiLine(sb, options[k],
+					controller.camera.viewportWidth / 2f - options[k].length() * 6,
+					initialY + MenuController.THE_NUMBER_23 - MenuController.SEU_PEQUENO_MUNDINHO_SERÁ_ABALADO * k);
+		}
+		select(controller.camera.viewportWidth / 2f, controller.selectorYPos);
+	}
+	
+	private void mainMenu() {
+		introMenuAnimation();
+		
+		drawMenuOptions(controller.mainMenuOptions, controller.mainMenuInitialY);
+	}
+	
+	private void lanMenu() {
+		// Header of the menu
+		font.drawMultiLine(sb, controller.mainMenuOptions[MenuController.LAN_OPTION],
+				controller.camera.viewportWidth / 2f - controller.mainMenuOptions[MenuController.LAN_OPTION].length() * 6, 420);// 73
+		
+		drawMenuOptions(controller.lanMenuOptions, controller.lanInitialY);
 		
 		// current ip typed
-		font.drawMultiLine(sb, controller.strIp, controller.camera.viewportWidth / 2f
+		if(controller.handleType){
+			font.drawMultiLine(sb, controller.strIp, controller.camera.viewportWidth / 2f
 				- controller.strIp.length() * 6, 320);
+		} else if(controller.waitConnetion){
+			font.drawMultiLine(sb, controller.myIp, controller.camera.viewportWidth / 2f
+					- controller.myIp.length() * 6, 320);
+			
+			font.drawMultiLine(sb, controller.hostWaitText, controller.camera.viewportWidth / 2f
+					- controller.hostWaitText.length() * 6, 290);
+		}
 	}
-
-	String sp = "Single";
-	String exit = "Exit";
-
-	private void text() {
-		font.drawMultiLine(sb, sp,
-				controller.camera.viewportWidth / 2f - sp.length() * 6, 123);
-		font.drawMultiLine(sb, mp,
-				controller.camera.viewportWidth / 2f - mp.length() * 6, 93);
-		font.drawMultiLine(sb, exit, controller.camera.viewportWidth / 2f
-				- exit.length() * 6, 63);// 73
-		select(controller.camera.viewportWidth / 2f, controller.posSelV);
+	
+	private void onlineMenu() {
+		// Header of the menu
+		font.drawMultiLine(sb, controller.mainMenuOptions[MenuController.ONLINE_OPTION],
+				controller.camera.viewportWidth / 2f - controller.mainMenuOptions[MenuController.ONLINE_OPTION].length() * 6, 420);// 73
+		
+		drawMenuOptions(controller.lanMenuOptions, controller.lanInitialY);
+		
+		// current ip typed
+		if(controller.handleType){
+			font.drawMultiLine(sb, controller.strIp, controller.camera.viewportWidth / 2f
+				- controller.strIp.length() * 6, 320);
+		} 
+		if(controller.waitConnetion) {
+			
+			font.drawMultiLine(sb, controller.hostWaitText, controller.camera.viewportWidth / 2f
+					- controller.hostWaitText.length() * 6, 290);
+		}
 	}
-
 }

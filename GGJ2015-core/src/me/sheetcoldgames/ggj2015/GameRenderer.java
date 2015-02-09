@@ -1,7 +1,6 @@
 package me.sheetcoldgames.ggj2015;
 
 import me.sheetcoldgames.ggj2015.controller.GameController;
-import me.sheetcoldgames.ggj2015.controller.NetworkController;
 import me.sheetcoldgames.ggj2015.engine.ACTION;
 import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;

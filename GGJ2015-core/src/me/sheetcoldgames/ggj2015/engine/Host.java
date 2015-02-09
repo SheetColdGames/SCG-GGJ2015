@@ -33,9 +33,13 @@ public class Host {
 			String.valueOf(Constants.L0_ROBOT_INIT_POS.x),
 			String.valueOf(Constants.L0_ROBOT_INIT_POS.y), "0", "0" };
 
-	public Host() {
+	public Host(String ip) {
 		try {
-			hostAddress = InetAddress.getLocalHost();
+			if (ip == null){
+				hostAddress = InetAddress.getLocalHost();
+			} else{
+				hostAddress = InetAddress.getByName(ip);//getLocalHost();
+			}
 		} catch (UnknownHostException e) {
 			System.out.println("Cold not get the host address.");
 			return;
@@ -98,7 +102,7 @@ public class Host {
 		}
 	}
 
-	public int getFromClient() {// TODO:overload with serializable
+	public int getFromClient() {
 		try {
 			bufferedReader = new BufferedReader(new InputStreamReader(
 					clientSocket.getInputStream()));
@@ -113,7 +117,7 @@ public class Host {
 
 	InputStream is;
 
-	public String[] getFromClientSTR() {// TODO:overload with serializable
+	public String[] getFromClientSTR() {
 		try {
 			is = clientSocket.getInputStream();
 			bufferedReader = new BufferedReader(new InputStreamReader(is));
