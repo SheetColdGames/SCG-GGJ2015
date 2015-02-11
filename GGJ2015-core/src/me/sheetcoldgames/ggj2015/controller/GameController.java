@@ -114,6 +114,20 @@ public class GameController {
 	
 	public void dispose() {
 		audioController.dispose();
+		map.dispose();
+		// Removing all the map points
+		deletingMapPoints();
+	}
+	
+	private void deletingMapPoints() {
+		if (!groupPoints.isEmpty()) {
+			for (int k = 0; k < groupPoints.size(); k++) {
+				for (int j = 0; j < groupPoints.get(k).size(); j++) {
+					groupPoints.get(k).clear();
+				}
+			}
+			groupPoints.clear();
+		}
 	}
 	
 	protected void initTestMap(String filename) {
@@ -240,9 +254,11 @@ public class GameController {
 				currentRobotIndex = k;
 			}
 		}
+		/*
 		System.out.println("Robot: "+aEntity.get(currentRobotIndex).velocity);
 		System.out.println("Girl: "+aEntity.get(currentGirlIndex).velocity);
 		System.out.println();
+		*/
 	}
 	
 	protected void updateEntities() {

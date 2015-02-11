@@ -3,14 +3,15 @@ package me.sheetcoldgames.ggj2015.controller;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import me.sheetcoldgames.ggj2015.Constants;
 import me.sheetcoldgames.ggj2015.engine.ACTION;
 import me.sheetcoldgames.ggj2015.engine.DIRECTION;
 import me.sheetcoldgames.ggj2015.engine.Entity;
 import me.sheetcoldgames.ggj2015.engine.SheetPoint;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -58,6 +59,21 @@ GameController controller;
 	public void updateEnemy(Entity enemy,
 			ArrayList<LinkedList<SheetPoint>> groupPoints, Entity girl,
 			Entity robot) {
+		/*
+		 * if the enemy status is guarding, then he follow his patrol points
+		 * if, while following his patrol points, he finds the girl or the robot
+		 * then he should update his status to attack the girl or the robot
+		 */
+		if (enemy.action == ACTION.WALK) {
+			followPatrolPoints(enemy, true);
+		} else if (enemy.action == ACTION.IDLE) {
+			guardPatrolPoint(enemy, 2f, 4);
+		} else if (enemy.action == ACTION.ATTACK) {
+			
+		}
+		System.out.println(enemy.action);
+		System.out.println(enemy.horizontalDir + "\n");
+		/*
 		if (enemy.patrolPoints.size() != 0) {
 			enemyRadius.x = enemy.position.x;
 			enemyRadius.y = enemy.position.y;
@@ -65,6 +81,7 @@ GameController controller;
 			if (enemy.action != ACTION.ATTACK) {
 				if (enemyRadius.contains(girl.position.x, girl.position.y) || 
 						enemyRadius.contains(robot.position.x, robot.position.y)) {
+					// in case the enemy sees the girl
 					if (seeEntity(enemy.position.x, enemy.position.y, girl.position.x, girl.position.y)) {
 						//System.out.println("I'm supposed to attack the girl now");
 						if (enemy.id == Constants.YELLOW_ENEMY_AI_ID) {
@@ -111,6 +128,7 @@ GameController controller;
 		} else {
 			//System.out.println("out of bounds");
 		}
+		*/
 	}
 	
 	/*
@@ -206,7 +224,12 @@ GameController controller;
 		return true;
 	}
 	
-	private void followPatrolPoints(Entity enemy) {
+	/**
+	 * 
+	 * @param enemy the enemy that will follow the patrol points and guard the area
+	 * @param checkGuard if true, then guard will change its stance to idle every time he meets a patrol point
+	 */
+	private void followPatrolPoints(Entity enemy, boolean checkGuard) {
 		// update with the currentRadius we're trying to reach
 		currentRadius.x = enemy.patrolPoints.get(enemy.currentPatrolPoint).x;
 		currentRadius.y = enemy.patrolPoints.get(enemy.currentPatrolPoint).y;
@@ -232,7 +255,7 @@ GameController controller;
 				enemy.velocity.y = 0;
 				
 			}
-		} else {
+		} else { // the enemy meets a guard point
 			enemy.velocity.x = 0;
 			enemy.velocity.y = 0;
 			enemy.position.x = enemy.patrolPoints.get(enemy.currentPatrolPoint).x;
@@ -241,6 +264,10 @@ GameController controller;
 			
 			if (enemy.currentPatrolPoint == enemy.patrolPoints.size()) {
 				enemy.currentPatrolPoint = 0;
+			}
+			if (checkGuard) {
+				enemy.action = ACTION.IDLE;
+				enemy.stateTime = 0f;
 			}
 			/*
 			Vector2 intersectedPoint = new Vector2();
@@ -265,5 +292,44 @@ GameController controller;
 			}
 			*/
 		}
+	}
+	
+	/**
+	 * 
+	 * @param enemy the enemy instance for use
+	 * @param timeStanding how many seconds will take before the enemy does anything else
+	 * @param checks the amount of checks the guard will make before doing anything else
+	 */
+	private void guardPatrolPoint(Entity enemy, float timeStanding, int checks) {
+		enemy.verticalDir = DIRECTION.DOWN;
+		
+		float factorOfTime = MathUtils.PI/timeStanding;
+		
+		if (enemy.stateTime > timeStanding * checks) {
+			enemy.stateTime = 0f;
+			enemy.action = ACTION.WALK;
+		} else if (MathUtils.sin(enemy.stateTime * factorOfTime) < 0) {
+			enemy.horizontalDir = DIRECTION.LEFT;
+		} else {
+			enemy.horizontalDir = DIRECTION.RIGHT;
+		}
+
+		System.out.println("Enemy state time: " + enemy.stateTime);
+		System.out.println((MathUtils.cos(enemy.stateTime + MathUtils.PI) + 1)*timeStanding);
+		/*
+		if (enemy.stateTime < 2f) {
+			enemy.horizontalDir = DIRECTION.RIGHT;
+		} else if (enemy.stateTime < 4f) {
+		} else if (enemy.stateTime < 6f) {
+			enemy.horizontalDir = DIRECTION.RIGHT;
+		} else if (enemy.stateTime < 8f) {
+			
+		} else if (enemy.stateTime < 10f) {
+			enemy.horizontalDir = DIRECTION.RIGHT;
+		} else {
+			enemy.stateTime = 0f;
+			enemy.action = ACTION.WALK;
+		}
+		*/
 	}
 }

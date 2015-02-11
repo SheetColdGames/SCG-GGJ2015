@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.math.Vector2;
 
-public class Entity implements Serializable{
+public class Entity implements Serializable {
 	
 	private static final long serialVersionUID = -3032914695134938754L;
 
